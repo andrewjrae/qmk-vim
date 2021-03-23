@@ -1,0 +1,10 @@
+#+TITLE: QMK Vim
+#+OPTIONS: ^:nil
+
+* Table of Contents :TOC_3:noexport:
+- [[#about][About]]
+
+* About
+This is a work in progress project aiming to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
+
+The other goal is to make it relatively plug and play in user keymaps, while still providing customization options.
