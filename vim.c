@@ -15,63 +15,14 @@
  */
 
 #include "vim.h"
-#include "motions.h"
+#include "modes.h"
 
-typedef bool (*process_func_t)(uint16_t, const keyrecord_t*);
+#include <wait.h>
+
+// the current process func, from in modes.h
+extern process_func_t process_func;
 
 static bool vim_enabled = false;
-static process_func_t process_func = NULL;
-
-static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
-    // handle these on their own so they can be pressed and held
-    switch (keycode) {
-        case KC_H:
-            register_motion(VIM_H, record);
-            return false;
-        case KC_J:
-            register_motion(VIM_J, record);
-            return false;
-        case KC_K:
-            register_motion(VIM_K, record);
-            return false;
-        case KC_L:
-            register_motion(VIM_L, record);
-            return false;
-        case KC_B:
-            register_motion(VIM_B, record);
-            return false;
-        case KC_W:
-            register_motion(VIM_W, record);
-            return false;
-        default:
-            break;
-    }
-    if (record->event.pressed) {
-        switch (keycode) {
-            case KC_0:
-                tap_code16(VIM_0);
-                return false;
-            case KC_DLR:
-                tap_code16(VIM_DLR);
-                return false;
-            case LSFT(KC_G):
-                tap_code16(VCMD(KC_A));
-                tap_code16(KC_DOWN);
-                return false;
-            case KC_U:
-                tap_code16(VCMD(KC_Z));
-                return false;
-            case LCTL(KC_R):
-                // redo is tricky, as it's really not standardized...
-                tap_code16(VCMD(KC_Y));
-                return false;
-            default:
-                break;
-        }
-    }
-    return false;
-}
-
 // Check to see if vim mode is enabled
 bool vim_mode_enabled(void) {
     return vim_enabled;
@@ -79,7 +30,7 @@ bool vim_mode_enabled(void) {
 // Enable vim mode
 void enable_vim_mode(void) {
     vim_enabled = true;
-    process_func = process_normal_mode;
+    normal_mode();
 }
 // Disable vim mode
 void disable_vim_mode(void) {

@@ -20,9 +20,13 @@
 #define VIM_0 KC_HOME
 #define VIM_DLR KC_END
 
-void register_motion(uint16_t keycode, const keyrecord_t *record) {
-    if (record->event.pressed)
-        register_code16(keycode);
-    else
-        unregister_code16(keycode);
-}
+typedef enum {
+    V_NONE = 0,
+    V_FORWARD,
+    V_BACKWARD,
+} visual_direction_t;
+
+void set_visual_direction(visual_direction_t dir);
+
+void register_motion(uint16_t keycode, const keyrecord_t *record);
+bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods);
