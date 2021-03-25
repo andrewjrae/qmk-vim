@@ -1,10 +1,5 @@
 #pragma once
 
-#include QMK_KEYBOARD_H
-
-// Function pointer type for process keycode functions
-typedef bool (*process_func_t)(uint16_t, const keyrecord_t*);
-
 // Function to enter into normal mode
 void normal_mode(void);
 // Function to enter into insert mode

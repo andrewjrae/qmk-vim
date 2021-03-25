@@ -16,10 +16,11 @@
 
 #include "vim.h"
 #include "modes.h"
+#include "process_func.h"
 
 #include <wait.h>
 
-// the current process func, from in modes.h
+// the current process func, from in process_func.c
 extern process_func_t process_func;
 
 static bool vim_enabled = false;

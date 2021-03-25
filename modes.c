@@ -1,7 +1,8 @@
 #include "modes.h"
 #include "motions.h"
+#include "process_func.h"
 
-process_func_t process_func = NULL;
+extern process_func_t process_func;
 
 #ifdef BETTER_VISUAL_MODE
 extern visual_direction_t visual_direction;
@@ -15,20 +16,46 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
     }
     if (record->event.pressed) {
         switch (keycode) {
+            // insert keys
+            case LSFT(KC_I):
+                tap_code16(KC_HOME);
+                // fallthrough to lowercase i
+            case KC_I:
+                insert_mode();
+                return false;
+            case LSFT(KC_A):
+                tap_code16(KC_END);
+                insert_mode();
+                return false;
+            case KC_A:
+                tap_code16(KC_RIGHT);
+                insert_mode();
+                return false;
+            case LSFT(KC_O):
+                tap_code16(KC_UP);
+                // fallthrough to lowercase o
+            case KC_O:
+                tap_code16(KC_END);
+                tap_code16(KC_ENTER);
+                insert_mode();
+                return false;
+            // g motions
             case LSFT(KC_G):
                 // this doesn't quite work for all programs
                 tap_code16(VCMD(KC_A));
                 wait_ms(200);
                 tap_code16(KC_DOWN);
                 return false;
-            case KC_U:
-                tap_code16(VCMD(KC_Z));
+            // visual modes
+            case LSFT(KC_V):
+                visual_line_mode();
                 return false;
             case KC_V:
                 visual_mode();
                 return false;
-            case LSFT(KC_V):
-                visual_line_mode();
+            // undo redo
+            case KC_U:
+                tap_code16(VCMD(KC_Z));
                 return false;
             case LCTL(KC_R):
                 tap_code16(VCMD(KC_Y));
@@ -117,6 +144,22 @@ static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record
     return false;
 }
 
+// The function that handles insert mode keycode inputs
+static bool process_insert_mode(uint16_t keycode, const keyrecord_t *record) {
+    // handle motions on their own so they can be pressed and held
+    if (record->event.pressed) {
+        switch (keycode) {
+            case KC_ESC:
+                normal_mode();
+                return false;
+            default:
+                break;
+        }
+    }
+    return true;
+}
+
+
 // Function to enter into normal mode
 void normal_mode(void) {
     process_func = process_normal_mode;
@@ -126,7 +169,7 @@ void normal_mode(void) {
 void insert_mode(void) {
     // need to clear motion keys if they are currently pressed
     /* clear_keyboard(); */
-    process_func = process_normal_mode;
+    process_func = process_insert_mode;
 }
 
 // Function to enter into visual mode
