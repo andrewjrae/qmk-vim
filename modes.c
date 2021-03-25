@@ -32,6 +32,11 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case LCTL(KC_R):
                 tap_code16(VCMD(KC_Y));
                 return false;
+            case KC_P:
+                tap_code16(KC_END);
+                tap_code16(KC_RIGHT);
+                tap_code16(LCTL(KC_V));
+                return false;
             default:
                 break;
         }
@@ -71,7 +76,7 @@ static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record
         case VIM_J:
 #ifdef BETTER_VISUAL_MODE
             if (visual_direction == V_NONE) {
-                tap_code16(KC_HOME);
+                tap_code16(KC_LEFT);
                 tap_code16(LSFT(VIM_J));
             }
 #endif
@@ -86,6 +91,11 @@ static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record
         }
     if (record->event.pressed) {
         switch (keycode) {
+            case KC_Y:
+                tap_code16(LCTL(KC_C));
+                tap_code16(KC_LEFT);
+                normal_mode();
+                return false;
             case KC_ESC:
 #ifdef BETTER_VISUAL_MODE
                 if (visual_direction == V_FORWARD)
@@ -123,11 +133,10 @@ void visual_mode(void) {
 void visual_line_mode(void) {
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
-    tap_code16(KC_END);
-    tap_code16(LSFT(KC_HOME));
-#else
-    tap_code16(KC_HOME);
 #endif
+    tap_code16(KC_END);
+    tap_code16(KC_RIGHT);
+    tap_code16(LSFT(KC_UP));
 
     process_func = process_visual_line_mode;
 }
