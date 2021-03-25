@@ -7,6 +7,7 @@ process_func_t process_func = NULL;
 extern visual_direction_t visual_direction;
 #endif
 
+// The function that handles normal mode keycode inputs
 static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
     // handle motions on their own so they can be pressed and held
     if (!process_motions(keycode, record, 0)) {
@@ -44,6 +45,7 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
     return false;
 }
 
+// The function that handles visual mode keycode inputs
 static bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     // handle motions on their own so they can be pressed and held
     if (!process_motions(keycode, record, QK_LSFT)) {
@@ -69,6 +71,7 @@ static bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     return false;
 }
 
+// The function that handles visual line mode keycode inputs
 static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
     // handle motions on their own so they can be pressed and held
     switch (keycode) {
@@ -114,14 +117,19 @@ static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record
     return false;
 }
 
+// Function to enter into normal mode
 void normal_mode(void) {
     process_func = process_normal_mode;
 }
 
+// Function to enter into insert mode
 void insert_mode(void) {
+    // need to clear motion keys if they are currently pressed
+    /* clear_keyboard(); */
     process_func = process_normal_mode;
 }
 
+// Function to enter into visual mode
 void visual_mode(void) {
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
@@ -130,6 +138,7 @@ void visual_mode(void) {
 }
 
 
+// Function to enter into visual line mode
 void visual_line_mode(void) {
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
