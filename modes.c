@@ -1,5 +1,6 @@
 #include "modes.h"
 #include "motions.h"
+#include "actions.h"
 #include "process_func.h"
 
 extern process_func_t process_func;
@@ -39,6 +40,28 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(KC_ENTER);
                 insert_mode();
                 return false;
+            // actions
+            case LSFT(KC_C):
+                tap_code16(LSFT(KC_END));
+                change_action();
+                return false;
+            case KC_C:
+                start_change_action();
+                return false;
+            case LSFT(KC_D):
+                tap_code16(LSFT(KC_END));
+                delete_action();
+                return false;
+            case KC_D:
+                start_delete_action();
+                return false;
+            case LSFT(KC_Y):
+                tap_code16(LSFT(KC_END));
+                yank_action();
+                return false;
+            case KC_Y:
+                start_yank_action();
+                return false;
             // g motions
             case LSFT(KC_G):
                 // this doesn't quite work for all programs
@@ -56,6 +79,8 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             // undo redo
             case KC_U:
                 tap_code16(VCMD(KC_Z));
+                wait_ms(10);
+                tap_code(KC_LEFT);
                 return false;
             case LCTL(KC_R):
                 tap_code16(VCMD(KC_Y));
@@ -64,6 +89,7 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(KC_END);
                 tap_code16(KC_RIGHT);
                 tap_code16(LCTL(KC_V));
+                tap_code16(KC_UP);
                 return false;
             default:
                 break;
@@ -168,7 +194,7 @@ void normal_mode(void) {
 // Function to enter into insert mode
 void insert_mode(void) {
     // need to clear motion keys if they are currently pressed
-    /* clear_keyboard(); */
+    clear_keyboard();
     process_func = process_insert_mode;
 }
 
