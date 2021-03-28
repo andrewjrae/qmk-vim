@@ -56,6 +56,9 @@ static bool process_colon_cmd(uint16_t keycode, const keyrecord_t *record) {
 bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
 #ifdef VIM_DOT_REPEAT
     bool should_record_action = true;
+    #define NO_RECORD_ACTION() should_record_action = false;
+#else
+    #define NO_RECORD_ACTION()
 #endif
 
     // handle motions on their own so they can be pressed and held
@@ -120,37 +123,31 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             // visual modes
             case LSFT(KC_V):
                 visual_line_mode();
+                NO_RECORD_ACTION();
                 break;
             case KC_V:
                 visual_mode();
+                NO_RECORD_ACTION();
                 break;
             // undo redo
             case KC_U:
                 tap_code16(VIM_UNDO);
                 wait_ms(10);
                 tap_code(KC_LEFT);
-#ifdef VIM_DOT_REPEAT
-                should_record_action = false;
-#endif
+                NO_RECORD_ACTION();
                 break;
             case LCTL(KC_R):
                 tap_code16(VIM_REDO);
-#ifdef VIM_DOT_REPEAT
-                should_record_action = false;
-#endif
+                NO_RECORD_ACTION();
                 break;
             case KC_SLSH:
                 tap_code16(VIM_FIND);
-#ifdef VIM_DOT_REPEAT
-                should_record_action = false;
-#endif
+                NO_RECORD_ACTION();
                 break;
 #ifdef VIM_COLON_CMDS
             case KC_COLON:
                 process_func = process_colon_cmd;
-#ifdef VIM_DOT_REPEAT
-                should_record_action = false;
-#endif
+                NO_RECORD_ACTION();
                 break;
 #endif
 #ifdef VIM_G_MOTIONS
@@ -160,27 +157,24 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(VCMD(KC_A));
                 wait_ms(200);
                 tap_code16(KC_DOWN);
-#ifdef VIM_DOT_REPEAT
-                should_record_action = false;
-#endif
+                NO_RECORD_ACTION();
                 break;
             case KC_G:
                 process_func = process_g_cmd;
-#ifdef VIM_DOT_REPEAT
-                should_record_action = false;
-#endif
+                NO_RECORD_ACTION();
                 break;
 #endif
 #ifdef VIM_DOT_REPEAT
             case KC_DOT:
                 repeat_action(record);
-                should_record_action = false;
+                NO_RECORD_ACTION();
                 break;
 #endif
             default:
-#ifdef VIM_DOT_REPEAT
-                should_record_action = false;
-#endif
+                NO_RECORD_ACTION();
+                if (keycode >= QK_MODS) {
+                    return true;
+                }
                 break;
         }
 #ifdef VIM_DOT_REPEAT
