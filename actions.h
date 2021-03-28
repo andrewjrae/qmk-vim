@@ -6,7 +6,12 @@
 #define VIM_CHANGE KC_DEL
 #define VIM_DELETE VCMD(KC_X) // note that you may prefer a simple delete here since we only are using one clipboard
 #define VIM_YANK VCMD(KC_C)
+// Other commands
 #define VIM_PASTE VCMD(KC_V)
+#define VIM_UNDO VCMD(KC_U)
+#define VIM_REDO VCMD(KC_Y)
+#define VIM_FIND VCMD(KC_F)
+#define VIM_SAVE VCMD(KC_S)
 
 // Process function to handle text objects ie in or around word
 bool process_text_objects(uint16_t keycode, const keyrecord_t *record);
@@ -23,8 +28,10 @@ void yank_action(void);
 void yank_line_action(void);
 // The paste action
 void paste_action(void);
+#ifdef VIM_PASTE_BEFORE
 // Paste before, ie P
 void paste_before_action(void);
+#endif
 
 // Visual mode isn't an action, but it does share the same action type sequences,
 // so we need a way to make the action not call an old action

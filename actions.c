@@ -156,6 +156,7 @@ void paste_action(void) {
     tap_code16(VIM_PASTE);
     normal_mode();
 }
+#ifdef VIM_PASTE_BEFORE
 // Paste before, ie P
 void paste_before_action(void) {
     if (yanked_line) {
@@ -169,6 +170,7 @@ void paste_before_action(void) {
     tap_code16(VIM_PASTE);
     normal_mode();
 }
+#endif
 
 // Function to start a change action
 void start_change_action(void) {

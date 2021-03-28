@@ -5,13 +5,16 @@
 
 extern process_func_t process_func;
 
+// forward declare from vim.h
+void disable_vim_mode(void);
+
 #ifdef BETTER_VISUAL_MODE
 extern visual_direction_t visual_direction;
 #endif
 
 #ifdef VIM_G_MOTIONS
 static bool process_g_cmd(uint16_t keycode, const keyrecord_t *record) {
-    if (record->event.pressed && keycode == KC_G) {
+    if (record->event.pressed) {
         switch (keycode) {
             case KC_G:
                 // this doesn't quite work for all programs
@@ -23,6 +26,27 @@ static bool process_g_cmd(uint16_t keycode, const keyrecord_t *record) {
                 break;
         }
         normal_mode();
+    }
+    return false;
+}
+#endif
+
+#ifdef VIM_COLON_CMDS
+static bool process_colon_cmd(uint16_t keycode, const keyrecord_t *record) {
+    if (record->event.pressed) {
+        switch (keycode) {
+            case KC_Q:
+                disable_vim_mode();
+                break;
+            case KC_W:
+                tap_code16(VIM_SAVE);
+                break;
+            case KC_ENTER:
+                normal_mode();
+                break;
+            default:
+                break;
+        }
     }
     return false;
 }
@@ -81,9 +105,11 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case KC_Y:
                 start_yank_action();
                 return false;
+#ifdef VIM_PASTE_BEFORE
             case LSFT(KC_P):
                 paste_before_action();
                 return false;
+#endif
             case KC_P:
                 paste_action();
                 return false;
@@ -96,13 +122,21 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 return false;
             // undo redo
             case KC_U:
-                tap_code16(VCMD(KC_Z));
+                tap_code16(VIM_UNDO);
                 wait_ms(10);
                 tap_code(KC_LEFT);
                 return false;
             case LCTL(KC_R):
-                tap_code16(VCMD(KC_Y));
+                tap_code16(VIM_REDO);
                 return false;
+            case KC_SLSH:
+                tap_code16(VIM_FIND);
+                return false;
+#ifdef VIM_COLON_CMDS
+            case KC_COLON:
+                process_func = process_colon_cmd;
+                return false;
+#endif
 #ifdef VIM_G_MOTIONS
             // g motions
             case LSFT(KC_G):
