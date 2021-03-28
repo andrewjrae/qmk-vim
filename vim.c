@@ -16,9 +16,8 @@
 
 #include "vim.h"
 #include "modes.h"
+#include "actions.h"
 #include "process_func.h"
-
-#include <wait.h>
 
 // the current process func, from in process_func.c
 extern process_func_t process_func;
@@ -93,6 +92,11 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
 
         // process the current keycode
         bool do_process_key = process_func(keycode, record);
+
+#ifdef VIM_DOT_REPEAT
+        if (record->event.pressed)
+            add_repeat_keycode(keycode);
+#endif
 
         // don't restore one shot mods as they have run their course
         set_mods(mods);

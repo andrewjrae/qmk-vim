@@ -11,6 +11,7 @@ extern process_func_t process_func;
 // forward declare insert_mode
 void normal_mode(void);
 void insert_mode(void);
+bool process_normal_mode(uint16_t keycode, const keyrecord_t *record);
 
 // which key is the current action key
 static uint16_t action_key;
@@ -203,3 +204,60 @@ void start_visual_action(void) {
     // Don't update the process_func, that should already be set to the
     // visual mode process func
 }
+
+#ifdef VIM_DOT_REPEAT
+
+#ifndef VIM_REPEAT_BUF_SIZE
+#define VIM_REPEAT_BUF_SIZE 64
+#endif
+
+typedef enum {
+    INVALID_REPEAT = 0,
+    VALID_REPEAT,
+    RECORDING_REPEAT,
+    EXECUTING_REPEAT,
+} repeat_state_t;
+
+static repeat_state_t repeat_state = INVALID_REPEAT;
+static uint8_t repeat_buf_idx = 0;
+static uint16_t repeat_buf[VIM_REPEAT_BUF_SIZE];
+
+/* void start_recording_repeat(uint16_t keycode) { */
+void start_recording_repeat(void) {
+    if (repeat_state <= VALID_REPEAT) {
+        repeat_state = RECORDING_REPEAT;
+        repeat_buf_idx = 0;
+        /* repeat_buf[0] = keycode; */
+        /* repeat_buf_idx = 1; */
+    }
+}
+
+void add_repeat_keycode(uint16_t keycode) {
+    if (repeat_state == RECORDING_REPEAT) {
+        if (repeat_buf_idx < VIM_REPEAT_BUF_SIZE) {
+            repeat_buf[repeat_buf_idx] = keycode;
+            ++repeat_buf_idx;
+            if (process_func == process_normal_mode) {
+                repeat_state = VALID_REPEAT;
+            }
+        }
+        else {
+            repeat_state = INVALID_REPEAT;
+        }
+    }
+}
+
+void repeat_action(const keyrecord_t *record) {
+    if (repeat_state == VALID_REPEAT) {
+        repeat_state = EXECUTING_REPEAT;
+        for (uint8_t i = 0; i < repeat_buf_idx; ++i) {
+            if (process_func(repeat_buf[i], record)) {
+                tap_code16(repeat_buf[i]);
+                /* wait_ms(5); */
+            }
+        }
+        repeat_state = VALID_REPEAT;
+    }
+}
+
+#endif

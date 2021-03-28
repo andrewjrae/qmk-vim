@@ -53,7 +53,11 @@ static bool process_colon_cmd(uint16_t keycode, const keyrecord_t *record) {
 #endif
 
 // The function that handles normal mode keycode inputs
-static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
+bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
+#ifdef VIM_DOT_REPEAT
+    bool should_record_action = true;
+#endif
+
     // handle motions on their own so they can be pressed and held
     if (!process_motions(keycode, record, 0)) {
         return false;
@@ -66,15 +70,15 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 // fallthrough to lowercase i
             case KC_I:
                 insert_mode();
-                return false;
+                break;
             case LSFT(KC_A):
                 tap_code16(KC_END);
                 insert_mode();
-                return false;
+                break;
             case KC_A:
                 tap_code16(KC_RIGHT);
                 insert_mode();
-                return false;
+                break;
             case LSFT(KC_O):
                 tap_code16(KC_UP);
                 // fallthrough to lowercase o
@@ -82,60 +86,72 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(KC_END);
                 tap_code16(KC_ENTER);
                 insert_mode();
-                return false;
+                break;
             // actions
             case LSFT(KC_C):
                 tap_code16(LSFT(KC_END));
                 change_action();
-                return false;
+                break;
             case KC_C:
                 start_change_action();
-                return false;
+                break;
             case LSFT(KC_D):
                 tap_code16(LSFT(KC_END));
                 delete_action();
-                return false;
+                break;
             case KC_D:
                 start_delete_action();
-                return false;
+                break;
             case LSFT(KC_Y):
                 tap_code16(LSFT(KC_END));
                 yank_action();
-                return false;
+                break;
             case KC_Y:
                 start_yank_action();
-                return false;
+                break;
 #ifdef VIM_PASTE_BEFORE
             case LSFT(KC_P):
                 paste_before_action();
-                return false;
+                break;
 #endif
             case KC_P:
                 paste_action();
-                return false;
+                break;
             // visual modes
             case LSFT(KC_V):
                 visual_line_mode();
-                return false;
+                break;
             case KC_V:
                 visual_mode();
-                return false;
+                break;
             // undo redo
             case KC_U:
                 tap_code16(VIM_UNDO);
                 wait_ms(10);
                 tap_code(KC_LEFT);
-                return false;
+#ifdef VIM_DOT_REPEAT
+                should_record_action = false;
+#endif
+                break;
             case LCTL(KC_R):
                 tap_code16(VIM_REDO);
-                return false;
+#ifdef VIM_DOT_REPEAT
+                should_record_action = false;
+#endif
+                break;
             case KC_SLSH:
                 tap_code16(VIM_FIND);
-                return false;
+#ifdef VIM_DOT_REPEAT
+                should_record_action = false;
+#endif
+                break;
 #ifdef VIM_COLON_CMDS
             case KC_COLON:
                 process_func = process_colon_cmd;
-                return false;
+#ifdef VIM_DOT_REPEAT
+                should_record_action = false;
+#endif
+                break;
 #endif
 #ifdef VIM_G_MOTIONS
             // g motions
@@ -144,14 +160,34 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(VCMD(KC_A));
                 wait_ms(200);
                 tap_code16(KC_DOWN);
-                return false;
+#ifdef VIM_DOT_REPEAT
+                should_record_action = false;
+#endif
+                break;
             case KC_G:
                 process_func = process_g_cmd;
-                return false;
+#ifdef VIM_DOT_REPEAT
+                should_record_action = false;
+#endif
+                break;
+#endif
+#ifdef VIM_DOT_REPEAT
+            case KC_DOT:
+                repeat_action(record);
+                should_record_action = false;
+                break;
 #endif
             default:
+#ifdef VIM_DOT_REPEAT
+                should_record_action = false;
+#endif
                 break;
         }
+#ifdef VIM_DOT_REPEAT
+        if (should_record_action) {
+            start_recording_repeat();
+        }
+#endif
     }
     return false;
 }
@@ -201,7 +237,7 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
 }
 
 // The function that handles visual line mode keycode inputs
-static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
+bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
     // handle motions on their own so they can be pressed and held
     switch (keycode) {
         case KC_J:

@@ -8,7 +8,7 @@
 #define VIM_YANK VCMD(KC_C)
 // Other commands
 #define VIM_PASTE VCMD(KC_V)
-#define VIM_UNDO VCMD(KC_U)
+#define VIM_UNDO VCMD(KC_Z)
 #define VIM_REDO VCMD(KC_Y)
 #define VIM_FIND VCMD(KC_F)
 #define VIM_SAVE VCMD(KC_S)
@@ -49,3 +49,9 @@ void start_yank_action(void);
 // and it doesn't use the process_vim_action function, it basically sets up the global
 // variables such that process_text_objects can be used without calling a random action
 void start_visual_action(void);
+
+#ifdef VIM_DOT_REPEAT
+void start_recording_repeat(void);
+void add_repeat_keycode(uint16_t keycode);
+void repeat_action(const keyrecord_t *record);
+#endif
