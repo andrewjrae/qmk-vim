@@ -9,6 +9,25 @@ extern process_func_t process_func;
 extern visual_direction_t visual_direction;
 #endif
 
+#ifdef VIM_G_MOTIONS
+static bool process_g_cmd(uint16_t keycode, const keyrecord_t *record) {
+    if (record->event.pressed && keycode == KC_G) {
+        switch (keycode) {
+            case KC_G:
+                // this doesn't quite work for all programs
+                tap_code16(VCMD(KC_A));
+                wait_ms(200);
+                tap_code16(KC_UP);
+                break;
+            default:
+                break;
+        }
+        normal_mode();
+    }
+    return false;
+}
+#endif
+
 // The function that handles normal mode keycode inputs
 static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
     // handle motions on their own so they can be pressed and held
@@ -62,6 +81,7 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case KC_Y:
                 start_yank_action();
                 return false;
+#ifdef VIM_G_MOTIONS
             // g motions
             case LSFT(KC_G):
                 // this doesn't quite work for all programs
@@ -69,6 +89,10 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 wait_ms(200);
                 tap_code16(KC_DOWN);
                 return false;
+            case KC_G:
+                process_func = process_g_cmd;
+                return false;
+#endif
             // visual modes
             case LSFT(KC_V):
                 visual_line_mode();
@@ -101,9 +125,11 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     if (!process_motions(keycode, record, QK_LSFT)) {
         return false;
     }
+#ifdef VIM_TEXT_OBJECTS
     if (!process_text_objects(keycode, record)) {
         return false;
     }
+#endif
     if (record->event.pressed) {
         switch (keycode) {
             case KC_C:
@@ -161,6 +187,7 @@ static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record
     if (record->event.pressed) {
         switch (keycode) {
             case KC_C:
+                tap_code16(LSFT(KC_LEFT));
                 change_action();
                 return false;
             case KC_D:

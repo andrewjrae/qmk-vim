@@ -47,13 +47,16 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
         return false;
     }
 
+#ifdef VIM_TEXT_OBJECTS
     if (!process_text_objects(keycode, record)) {
         return false;
     }
+#endif
 
     return false;
 }
 
+#ifdef VIM_TEXT_OBJECTS
 static bool process_in_object(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
@@ -111,6 +114,7 @@ bool process_text_objects(uint16_t keycode, const keyrecord_t *record) {
     }
     return true;
 }
+#endif // end ifdef VIM_TEXT_OBJECTS
 
 // The actual change action
 void change_action(void) {
