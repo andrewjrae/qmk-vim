@@ -86,10 +86,7 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(VCMD(KC_Y));
                 return false;
             case KC_P:
-                tap_code16(KC_END);
-                tap_code16(KC_RIGHT);
-                tap_code16(LCTL(KC_V));
-                tap_code16(KC_UP);
+                paste_action();
                 return false;
             default:
                 break;
@@ -99,13 +96,29 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
 }
 
 // The function that handles visual mode keycode inputs
-static bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
+bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     // handle motions on their own so they can be pressed and held
     if (!process_motions(keycode, record, QK_LSFT)) {
         return false;
     }
+    if (!process_text_objects(keycode, record)) {
+        return false;
+    }
     if (record->event.pressed) {
         switch (keycode) {
+            case KC_C:
+                change_action();
+                return false;
+            case KC_D:
+                delete_action();
+                return false;
+            case KC_Y:
+                yank_action();
+                return false;
+            case KC_P:
+                tap_code16(VIM_PASTE);
+                normal_mode();
+                return false;
             case KC_ESC:
 #ifdef BETTER_VISUAL_MODE
                 if (visual_direction == V_FORWARD)
@@ -147,9 +160,17 @@ static bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record
         }
     if (record->event.pressed) {
         switch (keycode) {
+            case KC_C:
+                change_action();
+                return false;
+            case KC_D:
+                delete_line_action();
+                return false;
             case KC_Y:
-                tap_code16(LCTL(KC_C));
-                tap_code16(KC_LEFT);
+                yank_line_action();
+                return false;
+            case KC_P:
+                tap_code16(VIM_PASTE);
                 normal_mode();
                 return false;
             case KC_ESC:
@@ -203,6 +224,8 @@ void visual_mode(void) {
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
 #endif
+    // this sets up the actions states so we can use text objects
+    start_visual_action();
     process_func = process_visual_mode;
 }
 

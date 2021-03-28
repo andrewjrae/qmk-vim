@@ -8,14 +8,21 @@
 #define VIM_YANK VCMD(KC_C)
 #define VIM_PASTE VCMD(KC_V)
 
+// Process function to handle text objects ie in or around word
 bool process_text_objects(uint16_t keycode, const keyrecord_t *record);
 
 // The actual change action
 void change_action(void);
 // The actual delete action
 void delete_action(void);
+// The yank action for a line
+void delete_line_action(void);
 // The actual yank action
 void yank_action(void);
+// The yank action for a line
+void yank_line_action(void);
+// The paste action
+void paste_action(void);
 
 // Visual mode isn't an action, but it does share the same action type sequences,
 // so we need a way to make the action not call an old action
@@ -27,3 +34,9 @@ void start_change_action(void);
 void start_delete_action(void);
 // Function to start a yank action
 void start_yank_action(void);
+
+// Function to start a visual action
+// Note that this functions a little differently as there is no action at the end,
+// and it doesn't use the process_vim_action function, it basically sets up the global
+// variables such that process_text_objects can be used without calling a random action
+void start_visual_action(void);

@@ -16,6 +16,8 @@ void insert_mode(void);
 static uint16_t action_key;
 // the current action_function
 static action_func_t action_func;
+// whether the current yank is a line or not
+static bool yanked_line;
 
 // Function to process key codes when in an action sequence
 static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
@@ -26,13 +28,15 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
             if (action_func == change_action) {
                 tap_code16(KC_HOME);
                 tap_code16(LSFT(KC_END));
+                action_func();
             }
             else {
                 tap_code16(KC_END);
                 tap_code16(KC_RIGHT);
                 tap_code16(LSFT(KC_UP));
+                action_func();
+                yanked_line = true;
             }
-            action_func();
             return false;
         }
     }
@@ -115,13 +119,37 @@ void change_action(void) {
 }
 // The actual delete action
 void delete_action(void) {
+    yanked_line = false;
+    tap_code16(VIM_DELETE);
+    normal_mode();
+}
+// The delete action for a line
+void delete_line_action(void) {
+    yanked_line = true;
     tap_code16(VIM_DELETE);
     normal_mode();
 }
 // The actual yank action
 void yank_action(void) {
+    yanked_line = false;
     tap_code16(VIM_YANK);
     tap_code16(KC_LEFT);
+    normal_mode();
+}
+// The yank action for a line
+void yank_line_action(void) {
+    yanked_line = true;
+    tap_code16(VIM_YANK);
+    tap_code16(KC_LEFT);
+    normal_mode();
+}
+// The paste action
+void paste_action(void) {
+    if (yanked_line) {
+        tap_code16(KC_END);
+        tap_code16(KC_RIGHT);
+    }
+    tap_code16(VIM_PASTE);
     normal_mode();
 }
 
@@ -143,4 +171,17 @@ void start_yank_action(void) {
     action_key = KC_Y;
     action_func = yank_action;
     process_func = process_vim_action;
+}
+
+// a little nasty but okay...
+extern bool process_visual_mode(uint16_t keycode, const keyrecord_t *record);
+static void visual_no_action(void) {
+    process_func = process_visual_mode;
+}
+// Function to start a visual action
+void start_visual_action(void) {
+    action_key = KC_NO;
+    action_func = visual_no_action;
+    // Don't update the process_func, that should already be set to the
+    // visual mode process func
 }

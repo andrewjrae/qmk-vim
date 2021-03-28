@@ -72,18 +72,18 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
 
         // deal with mods
         static uint8_t mods = 0;
-        static uint8_t all_mods = 0;
+        static uint8_t oneshot_mods = 0;
         mods = get_mods();
-        all_mods = mods | get_oneshot_mods();
-        if (all_mods & MOD_MASK_SHIFT) {
+        oneshot_mods = get_oneshot_mods();
+        if ((mods | oneshot_mods) & MOD_MASK_SHIFT) {
             keycode = LSFT(keycode);
         }
-        else if (all_mods & MOD_MASK_CTRL) {
+        else if ((mods | oneshot_mods) & MOD_MASK_CTRL) {
             keycode = LCTL(keycode);
         }
         // TODO: allow for configuration here?
         // let through alt and gui chords
-        else if (all_mods) {
+        else if (mods | oneshot_mods) {
             return true;
         }
 
@@ -96,6 +96,9 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
 
         // don't restore one shot mods as they have run their course
         set_mods(mods);
+        if (do_process_key) {
+            set_oneshot_mods(oneshot_mods);
+        }
 
         return do_process_key;
     }
