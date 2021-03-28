@@ -108,9 +108,11 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case LSFT(KC_Y):
                 tap_code16(LSFT(KC_END));
                 yank_action();
+                NO_RECORD_ACTION();
                 break;
             case KC_Y:
                 start_yank_action();
+                NO_RECORD_ACTION();
                 break;
 #ifdef VIM_PASTE_BEFORE
             case LSFT(KC_P):
@@ -173,7 +175,7 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             default:
                 NO_RECORD_ACTION();
                 if (keycode >= QK_MODS) {
-                    return true;
+                    tap_code16(keycode);
                 }
                 break;
         }
