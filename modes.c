@@ -81,18 +81,12 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case KC_Y:
                 start_yank_action();
                 return false;
-#ifdef VIM_G_MOTIONS
-            // g motions
-            case LSFT(KC_G):
-                // this doesn't quite work for all programs
-                tap_code16(VCMD(KC_A));
-                wait_ms(200);
-                tap_code16(KC_DOWN);
+            case LSFT(KC_P):
+                paste_before_action();
                 return false;
-            case KC_G:
-                process_func = process_g_cmd;
+            case KC_P:
+                paste_action();
                 return false;
-#endif
             // visual modes
             case LSFT(KC_V):
                 visual_line_mode();
@@ -109,9 +103,18 @@ static bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case LCTL(KC_R):
                 tap_code16(VCMD(KC_Y));
                 return false;
-            case KC_P:
-                paste_action();
+#ifdef VIM_G_MOTIONS
+            // g motions
+            case LSFT(KC_G):
+                // this doesn't quite work for all programs
+                tap_code16(VCMD(KC_A));
+                wait_ms(200);
+                tap_code16(KC_DOWN);
                 return false;
+            case KC_G:
+                process_func = process_g_cmd;
+                return false;
+#endif
             default:
                 break;
         }

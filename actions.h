@@ -23,6 +23,8 @@ void yank_action(void);
 void yank_line_action(void);
 // The paste action
 void paste_action(void);
+// Paste before, ie P
+void paste_before_action(void);
 
 // Visual mode isn't an action, but it does share the same action type sequences,
 // so we need a way to make the action not call an old action

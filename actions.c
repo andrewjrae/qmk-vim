@@ -156,7 +156,19 @@ void paste_action(void) {
     tap_code16(VIM_PASTE);
     normal_mode();
 }
-
+// Paste before, ie P
+void paste_before_action(void) {
+    if (yanked_line) {
+        tap_code16(KC_UP);
+        tap_code16(KC_END);
+        tap_code16(KC_RIGHT);
+    }
+    else {
+        tap_code16(KC_LEFT);
+    }
+    tap_code16(VIM_PASTE);
+    normal_mode();
+}
 
 // Function to start a change action
 void start_change_action(void) {
