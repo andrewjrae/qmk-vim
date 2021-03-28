@@ -75,24 +75,20 @@ static bool process_around_object(uint16_t keycode, const keyrecord_t *record) {
         switch (keycode) {
             case KC_W:
                 tap_code16(VIM_W);
-                wait_ms(10);
                 tap_code16(VIM_W);
-                wait_ms(10);
                 tap_code16(VIM_B);
-                wait_ms(10);
                 tap_code16(LSFT(VIM_B));
                 action_func();
                 return false;
             case KC_G:
                 tap_code16(VCMD(KC_A));
-                process_func = process_around_object;
                 action_func();
                 return false;
             default:
+                normal_mode();
                 return true;
         }
     }
-    normal_mode();
     return false;
 }
 
