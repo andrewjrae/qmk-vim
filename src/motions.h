@@ -19,6 +19,7 @@
 
 #define VIM_B VCMD(KC_LEFT)
 #define VIM_W VCMD(KC_RIGHT)
+#define VIM_E VCMD(KC_RIGHT)
 
 #define VIM_0 KC_HOME
 #define VIM_DLR KC_END
