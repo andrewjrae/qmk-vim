@@ -123,14 +123,18 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 paste_action();
                 break;
             // visual modes
+#ifndef NO_VISUAL_LINE_MODE
             case LSFT(KC_V):
                 visual_line_mode();
                 NO_RECORD_ACTION();
                 break;
+#endif
+#ifndef NO_VISUAL_MODE
             case KC_V:
                 visual_mode();
                 NO_RECORD_ACTION();
                 break;
+#endif
             // undo redo
             case KC_U:
                 tap_code16(VIM_UNDO);
@@ -142,9 +146,8 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(VIM_REDO);
                 NO_RECORD_ACTION();
                 break;
-            case KC_SLSH:
-                tap_code16(VIM_FIND);
-                NO_RECORD_ACTION();
+            case KC_X:
+                tap_code16(VIM_X);
                 break;
 #ifdef VIM_COLON_CMDS
             case KC_COLON:
@@ -317,17 +320,20 @@ void insert_mode(void) {
 
 // Function to enter into visual mode
 void visual_mode(void) {
+#ifndef NO_VISUAL_MODE
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
 #endif
     // this sets up the actions states so we can use text objects
     start_visual_action();
     process_func = process_visual_mode;
+#endif
 }
 
 
 // Function to enter into visual line mode
 void visual_line_mode(void) {
+#ifndef NO_VISUAL_LINE_MODE
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
 #endif
@@ -336,4 +342,5 @@ void visual_line_mode(void) {
     tap_code16(LSFT(KC_UP));
 
     process_func = process_visual_line_mode;
+#endif
 }
