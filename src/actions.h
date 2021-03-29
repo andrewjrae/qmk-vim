@@ -2,6 +2,15 @@
 
 #include "motions.h"
 
+// Define a custom variable for the common shortcut modifier
+// ie on MAC, CMD + C is copy, but on Windows/Linux it's CTRL + C
+// This should be used whenever using one of these shortcuts
+#ifdef VIM_FOR_MAC
+#define VCMD LCMD
+#else
+#define VCMD LCTL
+#endif
+
 // These are the main keys for each vim core vim action
 #define VIM_CHANGE KC_DEL
 #define VIM_DELETE VCMD(KC_X) // note that you may prefer a simple delete here since we only are using one clipboard

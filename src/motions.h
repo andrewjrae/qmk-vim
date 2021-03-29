@@ -2,13 +2,13 @@
 
 #include QMK_KEYBOARD_H
 
-// Define a custom variable for the common shortcut modifier
-// ie on MAC, CMD + C is copy, but on Windows/Linux it's CTRL + C
+// Define a custom variable for the common motion shortcut modifier
+// ie on MAC, OPT + RIGHT is forward word, but on Windows/Linux it's CTRL + RIGHT
 // This should be used whenever using one of these shortcuts
 #ifdef VIM_FOR_MAC
-#define VCMD LCMD
+#define VMOTION LOPT
 #else
-#define VCMD LCTL
+#define VMOTION LCTL
 #endif
 
 // The vim motions keys supported by single keystrokes/chords
@@ -17,9 +17,9 @@
 #define VIM_K KC_UP
 #define VIM_L KC_RIGHT
 
-#define VIM_B VCMD(KC_LEFT)
-#define VIM_W VCMD(KC_RIGHT)
-#define VIM_E VCMD(KC_RIGHT)
+#define VIM_B VMOTION(KC_LEFT)
+#define VIM_W VMOTION(KC_RIGHT)
+#define VIM_E VMOTION(KC_RIGHT)
 
 #define VIM_0 KC_HOME
 #define VIM_DLR KC_END
