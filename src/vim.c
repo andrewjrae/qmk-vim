@@ -50,17 +50,12 @@ void toggle_vim_mode(void) {
 bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
     if (vim_enabled) {
         // Get the base keycode of a mod or layer tap key
-        switch (keycode) {
-            case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-            case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-            case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
-                // Earlier return if this has not been considered tapped yet
-                if (record->tap.count == 0)
-                    return true;
-                keycode = keycode & 0xFF;
-                break;
-            default:
-                break;
+        if ((QK_MOD_TAP <= keycode && keycode <= QK_MOD_TAP_MAX)
+            || (QK_LAYER_TAP <= keycode && keycode <= QK_LAYER_TAP_MAX)) {
+            // Earlier return if this has not been considered tapped yet
+            if (record->tap.count == 0)
+                return true;
+            keycode = keycode & 0xFF;
         }
 
         // let through anything above normal keyboard keycode or a mod
