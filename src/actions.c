@@ -222,13 +222,11 @@ static repeat_state_t repeat_state = INVALID_REPEAT;
 static uint8_t repeat_buf_idx = 0;
 static uint16_t repeat_buf[VIM_REPEAT_BUF_SIZE];
 
-/* void start_recording_repeat(uint16_t keycode) { */
 void start_recording_repeat(void) {
+    // if the state isn't recording or executing
     if (repeat_state <= VALID_REPEAT) {
         repeat_state = RECORDING_REPEAT;
         repeat_buf_idx = 0;
-        /* repeat_buf[0] = keycode; */
-        /* repeat_buf_idx = 1; */
     }
 }
 
@@ -253,7 +251,6 @@ void repeat_action(const keyrecord_t *record) {
         for (uint8_t i = 0; i < repeat_buf_idx; ++i) {
             if (process_func(repeat_buf[i], record)) {
                 tap_code16(repeat_buf[i]);
-                /* wait_ms(5); */
             }
         }
         repeat_state = VALID_REPEAT;
