@@ -1,1 +1,6 @@
-SRC += qmk-vim/process_func.c qmk-vim/motions.c qmk-vim/actions.c qmk-vim/modes.c qmk-vim/vim.c
+# note that the order is important here
+SRC += qmk-vim/src/process_func.c
+SRC += qmk-vim/src/motions.c
+SRC += qmk-vim/src/actions.c
+SRC += qmk-vim/src/modes.c
+SRC += qmk-vim/src/vim.c
