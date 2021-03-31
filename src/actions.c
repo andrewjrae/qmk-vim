@@ -2,6 +2,11 @@
 #include "motions.h"
 #include "process_func.h"
 
+
+#if defined (VIM_I_TEXT_OBJECTS) || defined (VIM_A_TEXT_OBJECTS)
+#define _VIM_TEXT_OBJECTS
+#endif
+
 // Function pointer type for executing actions
 typedef void (*action_func_t)(void);
 
@@ -48,7 +53,7 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
         return false;
     }
 
-#ifdef VIM_TEXT_OBJECTS
+#ifdef _VIM_TEXT_OBJECTS
     if (!process_text_objects(keycode, record)) {
         return false;
     }
@@ -57,7 +62,7 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
     return false;
 }
 
-#ifdef VIM_TEXT_OBJECTS
+#ifdef VIM_I_TEXT_OBJECTS
 static bool process_in_object(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
@@ -77,7 +82,9 @@ static bool process_in_object(uint16_t keycode, const keyrecord_t *record) {
     }
     return false;
 }
+#endif
 
+#ifdef VIM_A_TEXT_OBJECTS
 static bool process_around_object(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
@@ -99,16 +106,22 @@ static bool process_around_object(uint16_t keycode, const keyrecord_t *record) {
     }
     return false;
 }
+#endif
 
+#ifdef _VIM_TEXT_OBJECTS
 bool process_text_objects(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
+#ifdef VIM_I_TEXT_OBJECTS
             case KC_I:
                 process_func = process_in_object;
                 return false;
+#endif
+#ifdef VIM_A_TEXT_OBJECTS
             case KC_A:
                 process_func = process_around_object;
                 return false;
+#endif
             default:
                 return true;
         }
