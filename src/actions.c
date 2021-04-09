@@ -77,7 +77,7 @@ static bool process_in_object(uint16_t keycode, const keyrecord_t *record) {
                 return false;
             default:
                 normal_mode();
-                return true;
+                return false;
         }
     }
     return false;
@@ -101,7 +101,7 @@ static bool process_around_object(uint16_t keycode, const keyrecord_t *record) {
                 return false;
             default:
                 normal_mode();
-                return true;
+                return false;
         }
     }
     return false;
@@ -233,6 +233,7 @@ typedef enum {
 
 static repeat_state_t repeat_state = INVALID_REPEAT;
 static uint8_t repeat_buf_idx = 0;
+// if this gets much bigger you would probably want it in progmem
 static uint16_t repeat_buf[VIM_REPEAT_BUF_SIZE];
 
 void start_recording_repeat(void) {

@@ -229,6 +229,9 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
                 normal_mode();
                 return false;
             default:
+                if (keycode >= QK_MODS) {
+                    tap_code16(keycode);
+                }
                 break;
         }
     }
@@ -284,6 +287,9 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
                 normal_mode();
                 return false;
             default:
+                if (keycode >= QK_MODS) {
+                    tap_code16(keycode);
+                }
                 break;
         }
     }
