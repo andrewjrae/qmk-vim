@@ -20,7 +20,7 @@ static bool process_g_cmd(uint16_t keycode, const keyrecord_t *record) {
                 // this doesn't quite work for all programs
                 tap_code16(VCMD(KC_A));
                 wait_ms(200);
-                tap_code16(KC_UP);
+                tap_code(KC_UP);
                 break;
             default:
                 break;
@@ -69,25 +69,25 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
         switch (keycode) {
             // insert keys
             case LSFT(KC_I):
-                tap_code16(KC_HOME);
+                tap_code(KC_HOME);
                 // fallthrough to lowercase i
             case KC_I:
                 insert_mode();
                 break;
             case LSFT(KC_A):
-                tap_code16(KC_END);
+                tap_code(KC_END);
                 insert_mode();
                 break;
             case KC_A:
-                tap_code16(KC_RIGHT);
+                tap_code(KC_RIGHT);
                 insert_mode();
                 break;
             case LSFT(KC_O):
-                tap_code16(KC_UP);
+                tap_code(KC_UP);
                 // fallthrough to lowercase o
             case KC_O:
-                tap_code16(KC_END);
-                tap_code16(KC_ENTER);
+                tap_code(KC_END);
+                tap_code(KC_ENTER);
                 insert_mode();
                 break;
             // actions
@@ -161,7 +161,7 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 // this doesn't quite work for all programs
                 tap_code16(VCMD(KC_A));
                 wait_ms(200);
-                tap_code16(KC_DOWN);
+                tap_code(KC_DOWN);
                 NO_RECORD_ACTION();
                 break;
             case KC_G:
@@ -220,11 +220,11 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
             case KC_ESC:
 #ifdef BETTER_VISUAL_MODE
                 if (visual_direction == V_FORWARD)
-                    tap_code16(KC_RIGHT);
+                    tap_code(KC_RIGHT);
                 else
-                    tap_code16(KC_LEFT);
+                    tap_code(KC_LEFT);
 #else
-                tap_code16(KC_RIGHT);
+                tap_code(KC_RIGHT);
 #endif
                 normal_mode();
                 return false;
@@ -246,7 +246,7 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
         case VIM_J:
 #ifdef BETTER_VISUAL_MODE
             if (visual_direction == V_NONE) {
-                tap_code16(KC_LEFT);
+                tap_code(KC_LEFT);
                 tap_code16(LSFT(VIM_J));
             }
 #endif
@@ -278,11 +278,11 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
             case KC_ESC:
 #ifdef BETTER_VISUAL_MODE
                 if (visual_direction == V_FORWARD)
-                    tap_code16(KC_RIGHT);
+                    tap_code(KC_RIGHT);
                 else
-                    tap_code16(KC_LEFT);
+                    tap_code(KC_LEFT);
 #else
-                tap_code16(KC_RIGHT);
+                tap_code(KC_RIGHT);
 #endif
                 normal_mode();
                 return false;
@@ -343,8 +343,8 @@ void visual_line_mode(void) {
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
 #endif
-    tap_code16(KC_END);
-    tap_code16(KC_RIGHT);
+    tap_code(KC_END);
+    tap_code(KC_RIGHT);
     tap_code16(LSFT(KC_UP));
 
     process_func = process_visual_line_mode;

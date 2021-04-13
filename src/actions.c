@@ -32,13 +32,13 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
         if (keycode == action_key) {
             // for the change action
             if (action_func == change_action) {
-                tap_code16(KC_HOME);
+                tap_code(KC_HOME);
                 tap_code16(LSFT(KC_END));
                 action_func();
             }
             else {
-                tap_code16(KC_END);
-                tap_code16(KC_RIGHT);
+                tap_code(KC_END);
+                tap_code(KC_RIGHT);
                 tap_code16(LSFT(KC_UP));
                 action_func();
                 yanked_line = true;
@@ -151,21 +151,21 @@ void delete_line_action(void) {
 void yank_action(void) {
     yanked_line = false;
     tap_code16(VIM_YANK);
-    tap_code16(KC_LEFT);
+    tap_code(KC_LEFT);
     normal_mode();
 }
 // The yank action for a line
 void yank_line_action(void) {
     yanked_line = true;
     tap_code16(VIM_YANK);
-    tap_code16(KC_LEFT);
+    tap_code(KC_LEFT);
     normal_mode();
 }
 // The paste action
 void paste_action(void) {
     if (yanked_line) {
-        tap_code16(KC_END);
-        tap_code16(KC_RIGHT);
+        tap_code(KC_END);
+        tap_code(KC_RIGHT);
     }
     tap_code16(VIM_PASTE);
     normal_mode();
@@ -174,12 +174,12 @@ void paste_action(void) {
 // Paste before, ie P
 void paste_before_action(void) {
     if (yanked_line) {
-        tap_code16(KC_UP);
-        tap_code16(KC_END);
-        tap_code16(KC_RIGHT);
+        tap_code(KC_UP);
+        tap_code(KC_END);
+        tap_code(KC_RIGHT);
     }
     else {
-        tap_code16(KC_LEFT);
+        tap_code(KC_LEFT);
     }
     tap_code16(VIM_PASTE);
     normal_mode();
