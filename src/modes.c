@@ -52,6 +52,13 @@ static bool process_colon_cmd(uint16_t keycode, const keyrecord_t *record) {
 }
 #endif
 
+// Allow the user to add their own bindings to both normal modes
+// Note, this should be optimized away unless there is a user definition
+__attribute__ ((weak))
+bool process_normal_mode_user(uint16_t keycode, const keyrecord_t *record) {
+    return true;
+}
+
 // The function that handles normal mode keycode inputs
 bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
 #ifdef VIM_DOT_REPEAT
@@ -191,6 +198,13 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
     return false;
 }
 
+// Allow the user to add their own bindings to both visual modes
+// Note, this should be optimized away unless there is a user definition
+__attribute__ ((weak))
+bool process_visual_mode_user(uint16_t keycode, const keyrecord_t *record) {
+    return true;
+}
+
 // The function that handles visual mode keycode inputs
 bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     // handle motions on their own so they can be pressed and held
@@ -296,8 +310,19 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
     return false;
 }
 
+
+// Allow the user to add their own bindings to insert mode
+// Note, this should be optimized away unless there is a user definition
+__attribute__ ((weak))
+bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
+    return true;
+}
+
 // The function that handles insert mode keycode inputs
 static bool process_insert_mode(uint16_t keycode, const keyrecord_t *record) {
+    if (!process_insert_mode_user(keycode, record)) {
+        return false;
+    }
     // handle motions on their own so they can be pressed and held
     if (record->event.pressed) {
         switch (keycode) {
