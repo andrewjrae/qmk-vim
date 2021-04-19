@@ -59,27 +59,18 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
         }
 
         // let through anything above normal keyboard keycode or a mod
-        if (keycode > QK_MODS_MAX || IS_MOD(keycode)
-            || (keycode >= KC_SYSTEM_POWER && keycode <= KC_MS_ACCEL2)) {
+        if ((keycode < KC_A || keycode > KC_CAPSLOCK) && (keycode < QK_MODS || keycode > QK_MODS_MAX)) {
             return true;
         }
 
-        // deal with mods
-        static uint8_t mods = 0;
-        static uint8_t oneshot_mods = 0;
-        mods = get_mods();
-        oneshot_mods = get_oneshot_mods();
-        if ((mods | oneshot_mods) & MOD_MASK_SHIFT) {
-            keycode = LSFT(keycode);
-        }
-        else if ((mods | oneshot_mods) & MOD_MASK_CTRL) {
-            keycode = LCTL(keycode);
-        }
-        // TODO: allow for configuration here?
-        // let through alt and gui chords
-        else if (mods | oneshot_mods) {
-            return true;
-        }
+
+        const uint8_t mods = get_mods();
+        const uint8_t oneshot_mods = get_oneshot_mods();
+        // hoping this gets optimized away by the compiler
+        const uint8_t all_mods = mods | oneshot_mods;
+        // this takes mod bits adds them to to the keycode, but always as the left mod (lower 4 mod bits)
+        // for some reason with AVR gcc 8.3.0, the compile size is larger if you use a |= ???
+        keycode = all_mods & 0xF0 ? keycode | (all_mods << 4) : keycode | (all_mods << 8);
 
         // clear the mods
         clear_mods();
