@@ -63,7 +63,6 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
             return true;
         }
 
-
         const uint8_t mods = get_mods();
         const uint8_t oneshot_mods = get_oneshot_mods();
         // hoping this gets optimized away by the compiler
@@ -84,8 +83,8 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
             add_repeat_keycode(keycode);
 #endif
 
-        // don't restore one shot mods as they have run their course
         set_mods(mods);
+        // only restore one shot mods if the key was passed through
         if (do_process_key) {
             set_oneshot_mods(oneshot_mods);
         }
