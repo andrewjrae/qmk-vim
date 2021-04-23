@@ -174,9 +174,9 @@ void paste_action(void) {
 // Paste before, ie P
 void paste_before_action(void) {
     if (yanked_line) {
-        tap_code16(KC_UP);
-        tap_code16(KC_END);
-        tap_code16(KC_RIGHT);
+        tap_code(KC_END);
+        tap_code(KC_RIGHT);
+        tap_code(KC_UP);
     }
     else {
         tap_code16(KC_LEFT);

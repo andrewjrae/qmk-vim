@@ -90,8 +90,11 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 insert_mode();
                 break;
             case LSFT(KC_O):
-                tap_code16(KC_UP);
-                // fallthrough to lowercase o
+                tap_code(KC_HOME);
+                tap_code(KC_ENTER);
+                tap_code(KC_UP);
+                insert_mode();
+                break;
             case KC_O:
                 tap_code16(KC_END);
                 tap_code16(KC_ENTER);
