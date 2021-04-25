@@ -27,6 +27,18 @@ static bool yanked_line;
 
 // Function to process key codes when in an action sequence
 static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
+    if (!process_motions(keycode, record, QK_LSFT)) {
+        clear_keyboard();
+        action_func();
+        return false;
+    }
+
+#ifdef _VIM_TEXT_OBJECTS
+    if (!process_text_objects(keycode, record)) {
+        return false;
+    }
+#endif
+
     // handle double taps, ie cc, yy, dd
     if (record->event.pressed) {
         if (keycode == action_key) {
@@ -45,19 +57,9 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
             }
             return false;
         }
+        // if nothing happened, return to normal mode
+        normal_mode();
     }
-
-    if (!process_motions(keycode, record, QK_LSFT)) {
-        clear_keyboard();
-        action_func();
-        return false;
-    }
-
-#ifdef _VIM_TEXT_OBJECTS
-    if (!process_text_objects(keycode, record)) {
-        return false;
-    }
-#endif
 
     return false;
 }
