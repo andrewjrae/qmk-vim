@@ -17,7 +17,7 @@
 - [[#configuration][Configuration]]
   - [[#setup][Setup]]
   - [[#adding-keybinds][Adding Keybinds]]
-  - [[#mac-support][MAC Support]]
+  - [[#mac-support][Mac Support]]
 
 * About
 This is project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
@@ -222,8 +222,8 @@ bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
     return true;
 }
 #+end_src
-** MAC Support
-Since MACs have different shortcuts, you need to set the =VIM_FOR_MAC= macro in your config.h.
-That being said I'm not a MAC user so it's all untested and I'd guess there are some issues.
+** Mac Support
+Since Macs have different shortcuts, you need to set the =VIM_FOR_MAC= macro in your config.h.
+That being said I'm not a Mac user so it's all untested and I'd guess there are some issues.
 
-If you are a MAC user and do encounter issues, feel free to put up a PR or an issue.
+If you are a Mac user and do encounter issues, feel free to put up a PR or an issue.
