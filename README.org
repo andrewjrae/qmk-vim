@@ -1,7 +1,7 @@
 #+TITLE: QMK Vim
 #+OPTIONS: ^:nil
 
-[[file:images/demo.gif][demo]]
+[[images/demo.gif]]
 
 * Table of Contents :TOC_3:noexport:
 - [[#about][About]]
