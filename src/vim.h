@@ -27,5 +27,5 @@ void disable_vim_mode(void);
 // Toggle vim mode
 void toggle_vim_mode(void);
 
-// Process keycode for leader sequences
+// Process keycode for vim mode
 bool process_vim_mode(uint16_t keycode, const keyrecord_t *record);

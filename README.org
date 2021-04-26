@@ -1,6 +1,8 @@
 #+TITLE: QMK Vim
 #+OPTIONS: ^:nil
 
+[[file:images/demo.gif][demo]]
+
 * Table of Contents :TOC_3:noexport:
 - [[#about][About]]
 - [[#features][Features]]
@@ -106,20 +108,20 @@ Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on th
 
 ** Extra Features
 In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros in your config.h.
-| Macro                 | Features Enabled/Disabled                                                                                              | Bytes Used (avr-gcc 8.3.0) |
-|-----------------------+------------------------------------------------------------------------------------------------------------------------+----------------------------|
-| =NO_VISUAL_MODE=      | Disables the normal visual mode.                                                                                       | +204 B                     |
-| =NO_VISUAL_LINE_MODE= | Disables the normal visual line mode.                                                                                  | +222 B                     |
-| =BETTER_VISUAL_MODE=  | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  | -196 B                     |
-| =VIM_I_TEXT_OBJECTS=  | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. | -78 B                      |
-| =VIM_A_TEXT_OBJECTS=  | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  | -94 B                      |
-| =VIM_G_MOTIONS=       | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           | -118 B                     |
-| =VIM_COLON_CMDS=      | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 | -68 B                      |
-| =VIM_PASTE_BEFORE=    | Adds the ~P~ command.                                                                                                  | -38 B                      |
-| =VIM_REPLACE=         | Adds the ~r~ command.                                                                                                  | -62 B                      |
-| =VIM_DOT_REPEAT=      | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     | -212 B                     |
+| Macro                 | Features Enabled/Disabled                                                                                              | Bytes (avr-gcc 8.3.0) |
+|-----------------------+------------------------------------------------------------------------------------------------------------------------+-----------------------|
+| =NO_VISUAL_MODE=      | Disables the normal visual mode.                                                                                       | +204 B                |
+| =NO_VISUAL_LINE_MODE= | Disables the normal visual line mode.                                                                                  | +222 B                |
+| =BETTER_VISUAL_MODE=  | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  | -196 B                |
+| =VIM_I_TEXT_OBJECTS=  | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. | -78 B                 |
+| =VIM_A_TEXT_OBJECTS=  | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  | -94 B                 |
+| =VIM_G_MOTIONS=       | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           | -118 B                |
+| =VIM_COLON_CMDS=      | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 | -68 B                 |
+| =VIM_PASTE_BEFORE=    | Adds the ~P~ command.                                                                                                  | -38 B                 |
+| =VIM_REPLACE=         | Adds the ~r~ command.                                                                                                  | -62 B                 |
+| =VIM_DOT_REPEAT=      | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     | -212 B                |
 
-With all the extra features enabled, the firmware takes up ~1842 B~ of space which is roughly 6% of a pro-micro.
+With all the extra features enabled, the firmware takes up 1842 B of space which is roughly 6% of a pro-micro.
 
 *** Text Objects
 Unfortunately there is really no way to implement text objects properly, especially things like brackets. However, word objects are very possible in some form are quite possible.
