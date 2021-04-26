@@ -44,12 +44,12 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
         if (keycode == action_key) {
             // for the change action
             if (action_func == change_action) {
-                tap_code(KC_HOME);
-                tap_code16(LSFT(KC_END));
+                VIM_HOME();
+                VIM_SHIFT_END();
                 action_func();
             }
             else {
-                tap_code(KC_END);
+                VIM_END();
                 tap_code(KC_RIGHT);
                 tap_code16(LSFT(KC_UP));
                 action_func();
@@ -164,7 +164,7 @@ void yank_line_action(void) {
 // The paste action
 void paste_action(void) {
     if (yanked_line) {
-        tap_code(KC_END);
+        VIM_END();
         tap_code(KC_RIGHT);
     }
     tap_code16(VIM_PASTE);
@@ -174,7 +174,7 @@ void paste_action(void) {
 // Paste before, ie P
 void paste_before_action(void) {
     if (yanked_line) {
-        tap_code(KC_END);
+        VIM_END();
         tap_code(KC_RIGHT);
         tap_code(KC_UP);
     }

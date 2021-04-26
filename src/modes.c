@@ -76,13 +76,13 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
         switch (keycode) {
             // insert keys
             case LSFT(KC_I):
-                tap_code(KC_HOME);
+                VIM_HOME();
                 // fallthrough to lowercase i
             case KC_I:
                 insert_mode();
                 break;
             case LSFT(KC_A):
-                tap_code(KC_END);
+                VIM_END();
                 insert_mode();
                 break;
             case KC_A:
@@ -90,33 +90,33 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 insert_mode();
                 break;
             case LSFT(KC_O):
-                tap_code(KC_HOME);
+                VIM_HOME();
                 tap_code(KC_ENTER);
                 tap_code(KC_UP);
                 insert_mode();
                 break;
             case KC_O:
-                tap_code(KC_END);
+                VIM_END();
                 tap_code(KC_ENTER);
                 insert_mode();
                 break;
             // actions
             case LSFT(KC_C):
-                tap_code16(LSFT(KC_END));
+                VIM_SHIFT_END();
                 change_action();
                 break;
             case KC_C:
                 start_change_action();
                 break;
             case LSFT(KC_D):
-                tap_code16(LSFT(KC_END));
+                VIM_SHIFT_END();
                 delete_action();
                 break;
             case KC_D:
                 start_delete_action();
                 break;
             case LSFT(KC_Y):
-                tap_code16(LSFT(KC_END));
+                VIM_SHIFT_END();
                 yank_action();
                 NO_RECORD_ACTION();
                 break;
@@ -376,7 +376,7 @@ void visual_line_mode(void) {
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
 #endif
-    tap_code(KC_END);
+    VIM_END();
     tap_code(KC_RIGHT);
     tap_code16(LSFT(KC_UP));
 

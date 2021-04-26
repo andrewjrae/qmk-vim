@@ -7,8 +7,27 @@
 // This should be used whenever using one of these shortcuts
 #ifdef VIM_FOR_MAC
 #define VMOTION LOPT
-#else
+
+#define VIM_0 LCMD(KC_LEFT)
+#define VIM_HOME() tap_code16(VIM_0);
+#define VIM_SHIFT_HOME() tap_code16(LSFT(VIM_0));
+
+#define VIM_DLR LCMD(KC_RIGHT)
+#define VIM_END() tap_code16(VIM_DLR);
+#define VIM_SHIFT_END() tap_code16(LSFT(VIM_DLR));
+
+#else // Windows / Linux
+
 #define VMOTION LCTL
+
+#define VIM_0 KC_HOME
+#define VIM_HOME() tap_code(VIM_0); // all this just to save a few bytes on a function call
+#define VIM_SHIFT_HOME() tap_code16(LSFT(VIM_0));
+
+#define VIM_DLR KC_END
+#define VIM_END() tap_code(VIM_DLR); // all this just to save a few bytes on a function call
+#define VIM_SHIFT_END() tap_code16(LSFT(VIM_DLR));
+
 #endif
 
 // The vim motions keys supported by single keystrokes/chords
@@ -20,9 +39,6 @@
 #define VIM_B VMOTION(KC_LEFT)
 #define VIM_W VMOTION(KC_RIGHT)
 #define VIM_E VMOTION(KC_RIGHT)
-
-#define VIM_0 KC_HOME
-#define VIM_DLR KC_END
 
 // An enum for the direction of the visual mode
 // This is used to figure out which way to exit out of a selection
