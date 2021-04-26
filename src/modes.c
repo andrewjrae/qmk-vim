@@ -8,6 +8,11 @@ extern process_func_t process_func;
 // forward declare from vim.h
 void disable_vim_mode(void);
 
+vim_mode_t vim_current_mode;
+vim_mode_t get_vim_mode(void) {
+    return vim_current_mode;
+}
+
 #ifdef BETTER_VISUAL_MODE
 extern visual_direction_t visual_direction;
 #endif
@@ -327,7 +332,7 @@ bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
 }
 
 // The function that handles insert mode keycode inputs
-static bool process_insert_mode(uint16_t keycode, const keyrecord_t *record) {
+bool process_insert_mode(uint16_t keycode, const keyrecord_t *record) {
     if (!process_insert_mode_user(keycode, record)) {
         return false;
     }
@@ -347,11 +352,13 @@ static bool process_insert_mode(uint16_t keycode, const keyrecord_t *record) {
 
 // Function to enter into normal mode
 void normal_mode(void) {
+    vim_current_mode = NORMAL_MODE;
     process_func = process_normal_mode;
 }
 
 // Function to enter into insert mode
 void insert_mode(void) {
+    vim_current_mode = INSERT_MODE;
     // need to clear motion keys if they are currently pressed
     clear_keyboard();
     process_func = process_insert_mode;
@@ -359,6 +366,7 @@ void insert_mode(void) {
 
 // Function to enter into visual mode
 void visual_mode(void) {
+    vim_current_mode = VISUAL_MODE;
 #ifndef NO_VISUAL_MODE
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
@@ -372,6 +380,7 @@ void visual_mode(void) {
 
 // Function to enter into visual line mode
 void visual_line_mode(void) {
+    vim_current_mode = VISUAL_LINE_MODE;
 #ifndef NO_VISUAL_LINE_MODE
 #ifdef BETTER_VISUAL_MODE
     visual_direction = V_NONE;
