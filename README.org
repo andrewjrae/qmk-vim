@@ -12,7 +12,9 @@
     - [[#visual-mode][Visual Mode]]
     - [[#visual-line-mode][Visual Line Mode]]
 - [[#configuration][Configuration]]
+  - [[#setup][Setup]]
   - [[#extra-feature-macros][Extra Feature Macros]]
+  - [[#dot-repeat][Dot Repeat]]
 
 * About
 This is project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
@@ -100,6 +102,61 @@ The only downside with the default implementation is that if you then try to go 
 Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on the cursor.
 
 * Configuration
+** Setup
++ First add the repo as a submodule to your keymap.
+  #+begin_src bash
+git submodule add https://github.com/andrewjrae/qmk-vim.git
+  #+end_src
+
++ Next, you need source the files in the make file, the easy way to do this is to just add this line to your ~rules.mk~ file.
+  #+begin_src make
+include $(KEYBOARD_PATH_2)/keymaps/$(KEYMAP)/qmk-vim/rules.mk
+  #+end_src
+  If this doesn't work, you can either try changing the number in the =KEYBOARD_PATH_2= variable (values 1-5), or simply copy the contents from [[file:rules.mk][qmk-vim/rules.mk]].
+
++ Now add the header file so you can add =process_vim_mode()= to your =process_record_user()=, it can either go at the top or the bottom, it depends on how you want it to interact with your keycodes.
+
+  If you process at the beginning it will look something like this, make sure that you return false when =process_vim_mode()= returns false.
+  #+begin_src C
+#include "qmk-vim/src/vim.h"
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Process case modes
+    if (!process_vim_mode(keycode, record)) {
+        return false;
+    }
+    ...
+  #+end_src
+
++ The last step is to add a way to enter into vim mode. There are many ways to do this, personally I use leader sequences, but using combos or just a macro on a layer are all viable ways to do this.
+  The important part here is ensure that you also have a way to get out of vim mode, since by default there is no way out.
+  Enabling =VIM_COLON_CMDS= will allow you to also use ~:q~ or ~:wq~ in order to get out of vim, but in general I would recommend using the =toggle_vim_mode()= function.
+
+  As a simple example, here is the setup for a simple custom keycode macro:
+  #+begin_src C
+enum custom_keycodes {
+    TOG_VIM = SAFE_RANGE,
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Process case modes
+    if (!process_vim_mode(keycode, record)) {
+        return false;
+    }
+
+    // Regular user keycode case statement
+    switch (keycode) {
+        case CAPSWORD:
+            if (record->event.pressed) {
+                toggle_vim_mode();
+            }
+            return false;
+        default:
+            return true;
+    }
+}
+  #+end_src
+
 ** Extra Feature Macros
 | Macro                 | Features Enabled/Disabled                                                                                              | Bytes Used (avr-gcc 8.3.0) |
 |-----------------------+------------------------------------------------------------------------------------------------------------------------+----------------------------|
@@ -112,3 +169,10 @@ Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on th
 | =VIM_COLON_CMDS=      | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 |                            |
 | =VIM_PASTE_BEFORE=    | Adds the ~P~ command.                                                                                                  |                            |
 | =VIM_DOT_REPEAT=      | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     |                            |
+
+** Dot Repeat
+The dot repeat feature can be enabled with the =VIM_DOT_REPEAT= macro. This lets the user hit the ~.~ key in normal mode to repeat the last normal mode command.
+For example, typing ~ciw~, ~hello!~, will replace the underlying word with ~hello!~, now going over another word hitting ~.~ will repeat the action, just like vim does.
+The way this works is that once an action starts, like ~c~ or ~D~, or even ~A~ all keycodes are recorded until we return to the normal mode state.
+Once you hit ~.~ it goes through the recorded keys until it hits normal mode again.
+The default size of the recorded keys buffer is =64=, but can be modified with the =VIM_REPEAT_BUF_SIZE= macro.
