@@ -27,26 +27,6 @@ static bool yanked_line;
 
 // Function to process key codes when in an action sequence
 static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
-    // handle double taps, ie cc, yy, dd
-    if (record->event.pressed) {
-        if (keycode == action_key) {
-            // for the change action
-            if (action_func == change_action) {
-                tap_code16(KC_HOME);
-                tap_code16(LSFT(KC_END));
-                action_func();
-            }
-            else {
-                tap_code16(KC_END);
-                tap_code16(KC_RIGHT);
-                tap_code16(LSFT(KC_UP));
-                action_func();
-                yanked_line = true;
-            }
-            return false;
-        }
-    }
-
     if (!process_motions(keycode, record, QK_LSFT)) {
         clear_keyboard();
         action_func();
@@ -58,6 +38,28 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
         return false;
     }
 #endif
+
+    // handle double taps, ie cc, yy, dd
+    if (record->event.pressed) {
+        if (keycode == action_key) {
+            // for the change action
+            if (action_func == change_action) {
+                tap_code(KC_HOME);
+                tap_code16(LSFT(KC_END));
+                action_func();
+            }
+            else {
+                tap_code(KC_END);
+                tap_code(KC_RIGHT);
+                tap_code16(LSFT(KC_UP));
+                action_func();
+                yanked_line = true;
+            }
+            return false;
+        }
+        // if nothing happened, return to normal mode
+        normal_mode();
+    }
 
     return false;
 }
@@ -111,20 +113,18 @@ static bool process_around_object(uint16_t keycode, const keyrecord_t *record) {
 #ifdef _VIM_TEXT_OBJECTS
 bool process_text_objects(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
-        switch (keycode) {
 #ifdef VIM_I_TEXT_OBJECTS
-            case KC_I:
-                process_func = process_in_object;
-                return false;
+        if (keycode == KC_I) {
+            process_func = process_in_object;
+            return false;
+        }
 #endif
 #ifdef VIM_A_TEXT_OBJECTS
-            case KC_A:
-                process_func = process_around_object;
-                return false;
-#endif
-            default:
-                return true;
+        if (keycode == KC_A) {
+            process_func = process_around_object;
+            return false;
         }
+#endif
     }
     return true;
 }
@@ -151,21 +151,21 @@ void delete_line_action(void) {
 void yank_action(void) {
     yanked_line = false;
     tap_code16(VIM_YANK);
-    tap_code16(KC_LEFT);
+    tap_code(KC_LEFT);
     normal_mode();
 }
 // The yank action for a line
 void yank_line_action(void) {
     yanked_line = true;
     tap_code16(VIM_YANK);
-    tap_code16(KC_LEFT);
+    tap_code(KC_LEFT);
     normal_mode();
 }
 // The paste action
 void paste_action(void) {
     if (yanked_line) {
-        tap_code16(KC_END);
-        tap_code16(KC_RIGHT);
+        tap_code(KC_END);
+        tap_code(KC_RIGHT);
     }
     tap_code16(VIM_PASTE);
     normal_mode();
@@ -179,7 +179,7 @@ void paste_before_action(void) {
         tap_code(KC_UP);
     }
     else {
-        tap_code16(KC_LEFT);
+        tap_code(KC_LEFT);
     }
     tap_code16(VIM_PASTE);
     normal_mode();
