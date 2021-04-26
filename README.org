@@ -17,6 +17,7 @@
 - [[#configuration][Configuration]]
   - [[#setup][Setup]]
   - [[#adding-keybinds][Adding Keybinds]]
+  - [[#mac-support][MAC Support]]
 
 * About
 This is project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
@@ -104,7 +105,7 @@ The only downside with the default implementation is that if you then try to go 
 Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on the cursor.
 
 ** Extra Features
-In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros.
+In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros in your config.h.
 | Macro                 | Features Enabled/Disabled                                                                                              | Bytes Used (avr-gcc 8.3.0) |
 |-----------------------+------------------------------------------------------------------------------------------------------------------------+----------------------------|
 | =NO_VISUAL_MODE=      | Disables the normal visual mode.                                                                                       |                            |
@@ -202,14 +203,14 @@ And not all keycodes will be passed down to vim, vim mode only intercepts keycod
 For example pressing =KC_LSHIFT= and then =KC_A= will have =LSFT(KC_A)= sent down to vim mode.
 It should also be noted that all modifiers will be added to the keycode as the left mod, ie you can always use =LSFT(KC_A)= for catching ~A~.
 
-The hooks that you can write are:
+The hooks that you can use are:
 #+begin_src C
 bool process_normal_mode_user(uint16_t keycode, const keyrecord_t *record);
 bool process_visual_mode_user(uint16_t keycode, const keyrecord_t *record);
 bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record);
 #+end_src
 
-As an example, I have the bad habit of hitting ~CTRL+S~ all the time. And for a long time I've had it so that in insert mode, ~CTRL+S~ saves and enters normal_mode().
+As an example, I have the bad habit of hitting ~CTRL+S~ all the time. And for a long time I've had it so that in insert mode, ~CTRL+S~ saves and enters [[#normal-mode][normal_mode()]].
 So in my [[https://github.com/andrewjrae/kyria-keymap/blob/master/keymap.c][keymap.c]] file I have this binding added:
 #+begin_src C
 bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
@@ -221,3 +222,8 @@ bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
     return true;
 }
 #+end_src
+** MAC Support
+Since MACs have different shortcuts, you need to set the =VIM_FOR_MAC= macro in your config.h.
+That being said I'm not a MAC user so it's all untested and I'd guess there are some issues.
+
+If you are a MAC user and do encounter issues, feel free to put up a PR or an issue.
