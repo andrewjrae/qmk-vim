@@ -11,10 +11,12 @@
     - [[#insert-mode][Insert Mode]]
     - [[#visual-mode][Visual Mode]]
     - [[#visual-line-mode][Visual Line Mode]]
+  - [[#extra-features][Extra Features]]
+    - [[#text-objects][Text Objects]]
+    - [[#dot-repeat][Dot Repeat]]
 - [[#configuration][Configuration]]
   - [[#setup][Setup]]
   - [[#extra-feature-macros][Extra Feature Macros]]
-  - [[#dot-repeat][Dot Repeat]]
 
 * About
 This is project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
@@ -101,6 +103,42 @@ Not only is this quite consistent, it also immediately highlights the current li
 The only downside with the default implementation is that if you then try to go down that first line will be deselected, so you have to start your visual selection a line above when moving downwards.
 Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on the cursor.
 
+** Extra Features
+In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros.
+| Macro                 | Features Enabled/Disabled                                                                                              | Bytes Used (avr-gcc 8.3.0) |
+|-----------------------+------------------------------------------------------------------------------------------------------------------------+----------------------------|
+| =NO_VISUAL_MODE=      | Disables the normal visual mode.                                                                                       |                            |
+| =NO_VISUAL_LINE_MODE= | Disables the normal visual line mode.                                                                                  |                            |
+| =BETTER_VISUAL_MODE=  | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  |                            |
+| =VIM_I_TEXT_OBJECTS=  | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. |                            |
+| =VIM_A_TEXT_OBJECTS=  | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  |                            |
+| =VIM_G_MOTIONS=       | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           |                            |
+| =VIM_COLON_CMDS=      | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 |                            |
+| =VIM_PASTE_BEFORE=    | Adds the ~P~ command.                                                                                                  |                            |
+| =VIM_REPLACE=         | Adds the ~r~ command.                                                                                                  |                            |
+| =VIM_DOT_REPEAT=      | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     |                            |
+
+*** Text Objects
+Unfortunately there is really no way to implement text objects properly, especially things like brackets. However, word objects are very possible in some form are quite possible.
+The tricky part is distinguishing between an inner and outer word, some editors will have a forward word jump go to the end of a word like vim's ~e~, while others will go to the start of the next, like vim's ~w~.
+
+It's easy to get an inner word if word jump acts like ~e~, since you can go to the end of the word, then hold shift and jump to the start.
+And similarly it's easy to get an outre word if word jump acts like ~w~, since you can go the start of the next word then hold shift and jump back to the start of your word.
+However, getting an inner word with just ~w~ and ~b~ at your disposal isn't possible without using arrow keys which won't be consistent in scenarios where the word punctuated in some way.
+But, it is possible to get an outer word with ~b~ and ~e~. In vim terms, the sequence looks like ~eebvb~, now in vim that doesn't do exactly what we want, but with word jumps it does result in an outer word selection.
+
+It should be noted that this always selects extra space to the right of the word, and if the cursor is at the end of a word it will get the wrong word. So it isn't ideal, but it works okay in general.
+
+There is also a the ~g~ object, which isn't even a default vim object, but ~CTRL+A~ provides such a nice way to select the entire document that I couldn't help it.
+I find it especially nice if I'm sending a message and I want to delete what I wrote or change the whole thing, with ~dig~ or ~cig~.
+
+*** Dot Repeat
+The dot repeat feature can be enabled with the =VIM_DOT_REPEAT= macro. This lets the user hit the ~.~ key in normal mode to repeat the last normal mode command.
+For example, typing ~ciw~, ~hello!~, will replace the underlying word with ~hello!~, now going over another word hitting ~.~ will repeat the action, just like vim does.
+The way this works is that once an action starts, like ~c~ or ~D~, or even ~A~ all keycodes are recorded until we return to the normal mode state.
+Once you hit ~.~ it goes through the recorded keys until it hits normal mode again.
+The default size of the recorded keys buffer is =64=, but can be modified with the =VIM_REPEAT_BUF_SIZE= macro.
+
 * Configuration
 ** Setup
 + First add the repo as a submodule to your keymap.
@@ -168,11 +206,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 | =VIM_G_MOTIONS=       | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           |                            |
 | =VIM_COLON_CMDS=      | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 |                            |
 | =VIM_PASTE_BEFORE=    | Adds the ~P~ command.                                                                                                  |                            |
+| =VIM_REPLACE=         | Adds the ~r~ command.                                                                                                  |                            |
 | =VIM_DOT_REPEAT=      | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     |                            |
 
-** Dot Repeat
-The dot repeat feature can be enabled with the =VIM_DOT_REPEAT= macro. This lets the user hit the ~.~ key in normal mode to repeat the last normal mode command.
-For example, typing ~ciw~, ~hello!~, will replace the underlying word with ~hello!~, now going over another word hitting ~.~ will repeat the action, just like vim does.
-The way this works is that once an action starts, like ~c~ or ~D~, or even ~A~ all keycodes are recorded until we return to the normal mode state.
-Once you hit ~.~ it goes through the recorded keys until it hits normal mode again.
-The default size of the recorded keys buffer is =64=, but can be modified with the =VIM_REPEAT_BUF_SIZE= macro.
