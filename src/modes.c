@@ -156,6 +156,11 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
                 tap_code16(VIM_REDO);
                 NO_RECORD_ACTION();
                 break;
+#ifdef VIM_REPLACE
+            case KC_R:
+                replace_action();
+                break;
+#endif
             case KC_X:
                 tap_code16(VIM_X);
                 break;

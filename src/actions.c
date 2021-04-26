@@ -218,6 +218,23 @@ void start_visual_action(void) {
     // visual mode process func
 }
 
+#ifdef VIM_REPLACE
+static bool process_replace_action(uint16_t keycode, const keyrecord_t *record) {
+    if (record->event.pressed) {
+        if (keycode != KC_ESC) {
+            tap_code(KC_DELETE);
+            tap_code16(keycode);
+        }
+        normal_mode();
+    }
+    return false;
+}
+
+void replace_action(void) {
+    process_func = process_replace_action;
+}
+#endif
+
 #ifdef VIM_DOT_REPEAT
 
 #ifndef VIM_REPEAT_BUF_SIZE

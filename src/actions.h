@@ -60,6 +60,10 @@ void start_yank_action(void);
 // variables such that process_text_objects can be used without calling a random action
 void start_visual_action(void);
 
+#ifdef VIM_REPLACE
+void replace_action(void);
+#endif
+
 #ifdef VIM_DOT_REPEAT
 void start_recording_repeat(void);
 void add_repeat_keycode(uint16_t keycode);
