@@ -113,20 +113,18 @@ static bool process_around_object(uint16_t keycode, const keyrecord_t *record) {
 #ifdef _VIM_TEXT_OBJECTS
 bool process_text_objects(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
-        switch (keycode) {
 #ifdef VIM_I_TEXT_OBJECTS
-            case KC_I:
-                process_func = process_in_object;
-                return false;
+        if (keycode == KC_I) {
+            process_func = process_in_object;
+            return false;
+        }
 #endif
 #ifdef VIM_A_TEXT_OBJECTS
-            case KC_A:
-                process_func = process_around_object;
-                return false;
-#endif
-            default:
-                return true;
+        if (keycode == KC_A) {
+            process_func = process_around_object;
+            return false;
         }
+#endif
     }
     return true;
 }
