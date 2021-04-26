@@ -16,7 +16,7 @@
     - [[#dot-repeat][Dot Repeat]]
 - [[#configuration][Configuration]]
   - [[#setup][Setup]]
-  - [[#extra-feature-macros][Extra Feature Macros]]
+  - [[#adding-keybinds][Adding Keybinds]]
 
 * About
 This is project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
@@ -194,18 +194,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 }
   #+end_src
+** Adding Keybinds
+Since most vim user's remap a key here or there, I've added hooks for the normal, visual, and insert modes.
+These hooks act in the exact same way that =process_record_user()= does, except that keycodes come in with any active modifiers applied to them.
+And not all keycodes will be passed down to vim, vim mode only intercepts keycodes alphanumeric, and symbolic keycodes (and escape).
 
-** Extra Feature Macros
-| Macro                 | Features Enabled/Disabled                                                                                              | Bytes Used (avr-gcc 8.3.0) |
-|-----------------------+------------------------------------------------------------------------------------------------------------------------+----------------------------|
-| =NO_VISUAL_MODE=      | Disables the normal visual mode.                                                                                       |                            |
-| =NO_VISUAL_LINE_MODE= | Disables the normal visual line mode.                                                                                  |                            |
-| =BETTER_VISUAL_MODE=  | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  |                            |
-| =VIM_I_TEXT_OBJECTS=  | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. |                            |
-| =VIM_A_TEXT_OBJECTS=  | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  |                            |
-| =VIM_G_MOTIONS=       | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           |                            |
-| =VIM_COLON_CMDS=      | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 |                            |
-| =VIM_PASTE_BEFORE=    | Adds the ~P~ command.                                                                                                  |                            |
-| =VIM_REPLACE=         | Adds the ~r~ command.                                                                                                  |                            |
-| =VIM_DOT_REPEAT=      | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     |                            |
+For example pressing =KC_LSHIFT= and then =KC_A= will have =LSFT(KC_A)= sent down to vim mode.
+It should also be noted that all modifiers will be added to the keycode as the left mod, ie you can always use =LSFT(KC_A)= for catching ~A~.
 
+The hooks that you can write are:
+#+begin_src C
+bool process_normal_mode_user(uint16_t keycode, const keyrecord_t *record);
+bool process_visual_mode_user(uint16_t keycode, const keyrecord_t *record);
+bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record);
+#+end_src
+
+As an example, I have the bad habit of hitting ~CTRL+S~ all the time. And for a long time I've had it so that in insert mode, ~CTRL+S~ saves and enters normal_mode().
+So in my [[https://github.com/andrewjrae/kyria-keymap/blob/master/keymap.c][keymap.c]] file I have this binding added:
+#+begin_src C
+bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
+    if (record->event.pressed && keycode == LCTL(KC_S)) {
+        normal_mode();
+        tap_code16(keycode);
+        return false;
+    }
+    return true;
+}
+#+end_src
