@@ -20,6 +20,7 @@
   - [[#setup][Setup]]
   - [[#adding-keybinds][Adding Keybinds]]
   - [[#mac-support][Mac Support]]
+  -  [[#displaying-modes][Displaying Modes]]
 
 * About
 This is project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
@@ -231,3 +232,29 @@ Since Macs have different shortcuts, you need to set the =VIM_FOR_MAC= macro in 
 That being said I'm not a Mac user so it's all untested and I'd guess there are some issues.
 
 If you are a Mac user and do encounter issues, feel free to put up a PR or an issue.
+
+**  Displaying Modes
+To help remind you that you have vim mode enabled, there are two functions available.
+The =vim_mode_enabled()= function which returns =true= is vim mode is active, and the =get_vim_mode()= function which returns the current vim mode.
+
+In my keymap I use these to display the current mode on my OLED.
+#+begin_src C
+if (vim_mode_enabled()) {
+    switch (get_vim_mode()) {
+        case NORMAL_MODE:
+            oled_write_P(PSTR("-- NORMAL --\n"), false);
+            break;
+        case INSERT_MODE:
+            oled_write_P(PSTR("-- INSERT --\n"), false);
+            break;
+        case VISUAL_MODE:
+            oled_write_P(PSTR("-- VISUAL --\n"), false);
+            break;
+        case VISUAL_LINE_MODE:
+            oled_write_P(PSTR("-- VISUAL LINE --\n"), false);
+            break;
+        default:
+            oled_write_P(PSTR("?????\n"), false);
+            break;
+    }
+#+end_src
