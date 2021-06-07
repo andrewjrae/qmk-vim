@@ -350,22 +350,40 @@ bool process_insert_mode(uint16_t keycode, const keyrecord_t *record) {
 }
 
 
+// Allow the user to set custom state when normal mode is entered
+__attribute__ ((weak))
+void normal_mode_user(void) {
+}
+
 // Function to enter into normal mode
 void normal_mode(void) {
+    normal_mode_user();
     vim_current_mode = NORMAL_MODE;
     process_func = process_normal_mode;
 }
 
+// Allow the user to set custom state when insert mode is entered
+__attribute__ ((weak))
+void insert_mode_user(void) {
+}
+
 // Function to enter into insert mode
 void insert_mode(void) {
+    insert_mode_user();
     vim_current_mode = INSERT_MODE;
     // need to clear motion keys if they are currently pressed
     clear_keyboard();
     process_func = process_insert_mode;
 }
 
+// Allow the user to set custom state when visual mode is entered
+__attribute__ ((weak))
+void visual_mode_user(void) {
+}
+
 // Function to enter into visual mode
 void visual_mode(void) {
+    visual_mode_user();
     vim_current_mode = VISUAL_MODE;
 #ifndef NO_VISUAL_MODE
 #ifdef BETTER_VISUAL_MODE
@@ -378,8 +396,14 @@ void visual_mode(void) {
 }
 
 
+// Allow the user to set custom state when visual line mode is entered
+__attribute__ ((weak))
+void visual_line_mode_user(void) {
+}
+
 // Function to enter into visual line mode
 void visual_line_mode(void) {
+    visual_line_mode_user();
     vim_current_mode = VISUAL_LINE_MODE;
 #ifndef NO_VISUAL_LINE_MODE
 #ifdef BETTER_VISUAL_MODE
