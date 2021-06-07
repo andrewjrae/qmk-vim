@@ -18,7 +18,11 @@
 // Other commands
 #define VIM_PASTE VCMD(KC_V)
 #define VIM_UNDO VCMD(KC_Z)
+#ifdef VIM_FOR_MAC
+#define VIM_REDO VCMD(S(KC_Z))
+#else
 #define VIM_REDO VCMD(KC_Y)
+#endif
 #define VIM_FIND VCMD(KC_F)
 #define VIM_SAVE VCMD(KC_S)
 #define VIM_X KC_DEL
