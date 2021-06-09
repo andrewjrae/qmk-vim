@@ -245,6 +245,7 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
                 change_action();
                 return false;
             case KC_D:
+            case KC_X:
                 delete_action();
                 return false;
             case KC_Y:
@@ -304,6 +305,7 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
                 change_action();
                 return false;
             case KC_D:
+            case KC_X:
                 delete_line_action();
                 return false;
             case KC_Y:

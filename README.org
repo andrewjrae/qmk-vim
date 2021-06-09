@@ -79,7 +79,7 @@ however if =VIM_FOR_MAC= is defined then these should change to =LCMD=.
 | p           | [[#paste-action][paste_action()]]               |                                                 |
 | u           | LCTL + z                                        | This works /most/ places                        |
 | CTRL + r    | LCTL + y                                        | This may or may not work everywhere             |
-| x           | DELETE                                          | This is currently only supported in normal mode |
+| x           | DELETE                                          |                                                 |
 
 Note that all keycodes chorded with CTRL, GUI, or ALT, that aren't bound to anything are let through. In other words, you can still alt tab and use shortcuts for whatever editor you're in.
 
