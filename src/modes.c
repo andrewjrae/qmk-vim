@@ -120,6 +120,15 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case KC_D:
                 start_delete_action();
                 break;
+            case LSFT(KC_S):
+                VIM_HOME();
+                VIM_SHIFT_END();
+                change_action();
+                break;
+            case KC_S:
+                tap_code16(LSFT(KC_RIGHT));
+                change_action();
+                break;
             case LSFT(KC_Y):
                 VIM_SHIFT_END();
                 yank_action();
@@ -232,6 +241,7 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
             case KC_C:
+            case KC_S:
                 change_action();
                 return false;
             case KC_D:
@@ -289,6 +299,7 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
             case KC_C:
+            case KC_S:
                 tap_code16(LSFT(KC_LEFT));
                 change_action();
                 return false;

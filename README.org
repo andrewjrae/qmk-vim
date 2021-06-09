@@ -50,14 +50,15 @@ Change, delete, and yank actions are all supported and can be combined with [[#m
 In visual mode each action can be accessed with =c=, =d=, and =y= respectively and they will act on the currently selected visual area.
 
 Normal mode also supports these commands:
-| Vim Binding | Action                | Notes                                              |
-|-------------+-----------------------+----------------------------------------------------|
-| cc          | Change line           | This doesn't copy the old line to clipboard        |
-| C           | Change to end of line | This doesn't copy the changed content to clipboard |
-| dd          | Delete line           | This copies the deleted line to clipboard          |
-| D           | Delete to end of line | This copies the deleted text to clipboard          |
-| yy          | Yank line             |                                                    |
-| Y           | Yank to end of line   |                                                    |
+| Vim Binding | Action                              | Notes                                              |
+|-------------+-------------------------------------+----------------------------------------------------|
+| cc / S      | Change line                         | This doesn't copy the old line to clipboard        |
+| C           | Change to end of line               | This doesn't copy the changed content to clipboard |
+| s           | Change character to right of cursor | This doesn't copy the changed content to clipboard |
+| dd          | Delete line                         | This copies the deleted line to clipboard          |
+| D           | Delete to end of line               | This copies the deleted text to clipboard          |
+| yy          | Yank line                           |                                                    |
+| Y           | Yank to end of line                 |                                                    |
 
 **** Paste Action
 The =paste_action()= handles pasting, which is simple for non lines, but most of the time, I'm pasting lines so this function attempts to consistently handle pasting lines. Yanks and deletes of lines are tracked through the =yanked_line= global, the paste action then pastes accordingly. For copying and pasting lines the line(s) the selection is made from the very start of the line below, up to start of the first line. See the [[#visual-line-mode][visual line mode]] section for more info on how lines are selected. There is also an optional =paste_before_action()=, enabled with the =VIM_PASTE_BEFORE= macro.
@@ -147,14 +148,18 @@ The default size of the recorded keys buffer is =64=, but can be modified with t
 
 * Configuration
 ** Setup
-+ First add the repo as a submodule to your keymap.
++ First add the repo as a submodule to your keymap or userspace.
   #+begin_src bash
 git submodule add https://github.com/andrewjrae/qmk-vim.git
   #+end_src
 
-+ Next, you need source the files in the make file, the easy way to do this is to just add this line to your ~rules.mk~ file.
++ Next, you need to source the files in the make file, the easy way to do this is to just add this line to your keymap's ~rules.mk~ file:
   #+begin_src make
 include $(KEYBOARD_PATH_2)/keymaps/$(KEYMAP)/qmk-vim/rules.mk
+  #+end_src
+  ...or to your userspace's ~rules.mk~ file:
+  #+begin_src make
+include $(USER_PATH)/qmk-vim/rules.mk
   #+end_src
   If this doesn't work, you can either try changing the number in the =KEYBOARD_PATH_2= variable (values 1-5), or simply copy the contents from [[file:rules.mk][qmk-vim/rules.mk]].
 
