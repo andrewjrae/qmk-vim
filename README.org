@@ -232,6 +232,24 @@ bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
     return true;
 }
 #+end_src
+** Setting Custom State
+The following user hooks are also called whenever the active mode is changed:
+#+begin_src C
+void insert_mode_user(void);
+void normal_mode_user(void);
+void visual_mode_user(void);
+void visual_line_mode_user(void);
+#+end_src
+
+These can optionally be used to set custom state in your keymap.c file; for example, changing the [[https://beta.docs.qmk.fm/using-qmk/hardware-features/lighting/feature_rgblight#enabling-and-disabling-lighting-layers-id-enabling-lighting-layers][RGB lighting layer]] to indicate the current mode:
+#+begin_src C
+void insert_mode_user(void) {
+  rgblight_set_layer_state(VIM_LIGHTING_LAYER, false);
+}
+void normal_mode_user(void) {
+  rgblight_set_layer_state(VIM_LIGHTING_LAYER, true);
+}
+#+end_src
 ** Mac Support
 Since Macs have different shortcuts, you need to set the =VIM_FOR_MAC= macro in your config.h.
 That being said I'm not a Mac user so it's all untested and I'd guess there are some issues.
