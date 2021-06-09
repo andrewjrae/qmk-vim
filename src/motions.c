@@ -53,9 +53,13 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
         case KC_W:
         case VIM_W:
             set_visual_direction(V_FORWARD);
-            register_motion(qk_mods | VIM_W, record);
-            register_motion(qk_mods | VIM_W, record);
-            register_motion(qk_mods | VIM_B, record);
+            if (record->event.pressed) {
+              register_code16(qk_mods | VIM_W);
+            } else {
+              unregister_code16(qk_mods | VIM_W);
+              tap_code16(qk_mods | VIM_W);
+              tap_code16(qk_mods | VIM_B);
+            }
             return false;
         case KC_0:
         case VIM_0:
