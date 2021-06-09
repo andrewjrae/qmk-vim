@@ -32,17 +32,17 @@ The other goal is to make it relatively plug and play in user keymaps, while sti
 The core features are in in the tables below and takes up roughly 5% of at Atmega32u4.
 *** Motions
 Motions are available in [[#normal-mode][normal]] and [[#visual-mode][visual mode]], and can be composed with [[#actions][actions]]. Note that in the table below the mods shown are for Linux/Windows, however if =VIM_FOR_MAC= is defined then these should change to =LOPT=.
-| Vim Binding | Action       | Notes                                                                             |
-|-------------+--------------+-----------------------------------------------------------------------------------|
-| h           | LEFT         |                                                                                   |
-| j           | DOWN         |                                                                                   |
-| k           | UP           |                                                                                   |
-| l           | RIGHT        |                                                                                   |
-| w           | LCTL + RIGHT | This may act more like an =e= command depending on the text environment             |
-| e           | LCTL + RIGHT | This may act more like an =w= command depending on the text environment             |
-| b           | LCTL + LEFT  |                                                                                   |
-| 0           | HOME         | In some text environments this goes to the true start, or the first piece of text |
-| $           | END          |                                                                                   |
+| Vim Binding | Action                                  | Notes                                                                             |
+|-------------+-----------------------------------------+-----------------------------------------------------------------------------------|
+| h           | LEFT                                    |                                                                                   |
+| j           | DOWN                                    |                                                                                   |
+| k           | UP                                      |                                                                                   |
+| l           | RIGHT                                   |                                                                                   |
+| w           | LCTL + RIGHT, LCTL + RIGHT, LCTL + LEFT |                                                                                   |
+| e           | LCTL + RIGHT                            |                                                                                   |
+| b           | LCTL + LEFT                             |                                                                                   |
+| 0           | HOME                                    | In some text environments this goes to the true start, or the first piece of text |
+| $           | END                                     |                                                                                   |
 
 *** Actions
 Change, delete, and yank actions are all supported and can be combined with [[#motions][motions]] and text objects in normal mode as you would expect. For example =cw= will change until the next word (or end of word depending on your text environment). Note that by default the =d= action will copy the deleted text to the clipboard.
