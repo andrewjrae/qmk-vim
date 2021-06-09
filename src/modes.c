@@ -66,6 +66,9 @@ bool process_normal_mode_user(uint16_t keycode, const keyrecord_t *record) {
 
 // The function that handles normal mode keycode inputs
 bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
+    if (!process_normal_mode_user(keycode, record)) {
+        return false;
+    }
 #ifdef VIM_DOT_REPEAT
     bool should_record_action = true;
     #define NO_RECORD_ACTION() should_record_action = false;
@@ -229,6 +232,9 @@ bool process_visual_mode_user(uint16_t keycode, const keyrecord_t *record) {
 
 // The function that handles visual mode keycode inputs
 bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
+    if (!process_visual_mode_user(keycode, record)) {
+        return false;
+    }
     // handle motions on their own so they can be pressed and held
     if (!process_motions(keycode, record, QK_LSFT)) {
         return false;
