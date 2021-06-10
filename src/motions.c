@@ -66,6 +66,7 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
             return false;
         case KC_0:
         case VIM_0:
+        case KC_CIRC:
             set_visual_direction(V_BACKWARD);
             register_motion(qk_mods | VIM_0, record);
             return false;

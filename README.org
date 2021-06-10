@@ -38,10 +38,10 @@ Motions are available in [[#normal-mode][normal]] and [[#visual-mode][visual mod
 | j           | DOWN                                    |                                                                                   |
 | k           | UP                                      |                                                                                   |
 | l           | RIGHT                                   |                                                                                   |
-| w           | LCTL + RIGHT, LCTL + RIGHT, LCTL + LEFT |                                                                                   |
-| e           | LCTL + RIGHT                            |                                                                                   |
-| b           | LCTL + LEFT                             |                                                                                   |
-| 0           | HOME                                    | In some text environments this goes to the true start, or the first piece of text |
+| w / W       | LCTL + RIGHT, LCTL + RIGHT, LCTL + LEFT |                                                                                   |
+| e / E       | LCTL + RIGHT                            |                                                                                   |
+| b / B       | LCTL + LEFT                             |                                                                                   |
+| 0 / ^       | HOME                                    | In some text environments this goes to the true start, or the first piece of text |
 | $           | END                                     |                                                                                   |
 
 *** Actions
