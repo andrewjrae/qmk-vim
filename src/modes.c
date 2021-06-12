@@ -223,7 +223,7 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
     return false;
 }
 
-// Allow the user to add their own bindings to both visual modes
+// Allow the user to add their own bindings to visual mode
 // Note, this should be optimized away unless there is a user definition
 __attribute__ ((weak))
 bool process_visual_mode_user(uint16_t keycode, const keyrecord_t *record) {
@@ -282,8 +282,18 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     return false;
 }
 
+// Allow the user to add their own bindings to visual line mode
+// Note, this should be optimized away unless there is a user definition
+__attribute__ ((weak))
+bool process_visual_line_mode_user(uint16_t keycode, const keyrecord_t *record) {
+    return true;
+}
+
 // The function that handles visual line mode keycode inputs
 bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
+    if (!process_visual_line_mode_user(keycode, record)) {
+        return false;
+    }
     // handle motions on their own so they can be pressed and held
     switch (keycode) {
         case KC_J:

@@ -206,7 +206,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
   #+end_src
 ** Adding Keybinds
-Since most vim user's remap a key here or there, I've added hooks for the normal, visual, and insert modes.
+Since most vim users remap a key here or there, I've added hooks for the normal, visual, visual line, and insert modes.
 These hooks act in the exact same way that =process_record_user()= does, except that keycodes come in with any active modifiers applied to them.
 And not all keycodes will be passed down to vim, vim mode only intercepts keycodes alphanumeric, and symbolic keycodes (and escape).
 
@@ -215,9 +215,10 @@ It should also be noted that all modifiers will be added to the keycode as the l
 
 The hooks that you can use are:
 #+begin_src C
+bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record);
 bool process_normal_mode_user(uint16_t keycode, const keyrecord_t *record);
 bool process_visual_mode_user(uint16_t keycode, const keyrecord_t *record);
-bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record);
+bool process_visual_line_mode_user(uint16_t keycode, const keyrecord_t *record);
 #+end_src
 
 As an example, I have the bad habit of hitting ~CTRL+S~ all the time. And for a long time I've had it so that in insert mode, ~CTRL+S~ saves and enters [[#normal-mode][normal_mode()]].
