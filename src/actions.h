@@ -7,20 +7,19 @@
 // This should be used whenever using one of these shortcuts
 #ifdef VIM_FOR_MAC
 #define VCMD LCMD
-#define VIM_REDO_KEYCODE LSFT(KC_Z)
+#define VIM_REDO VCMD(LSFT(KC_Z))
 #else
 #define VCMD LCTL
-#define VIM_REDO_KEYCODE KC_Y
+#define VIM_REDO VCMD(KC_Y)
 #endif
 
-// These are the main keys for each vim core vim action
+// These + VIM_REDO (defined above) are the main keys for each vim core vim action
 #define VIM_CHANGE KC_DEL
 #define VIM_DELETE VCMD(KC_X) // note that you may prefer a simple delete here since we only are using one clipboard
 #define VIM_YANK VCMD(KC_C)
 // Other commands
 #define VIM_PASTE VCMD(KC_V)
 #define VIM_UNDO VCMD(KC_Z)
-#define VIM_REDO VCMD(VIM_REDO_KEYCODE)
 #define VIM_FIND VCMD(KC_F)
 #define VIM_SAVE VCMD(KC_S)
 #define VIM_X KC_DEL
