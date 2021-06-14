@@ -49,20 +49,11 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
             return false;
         case KC_E:
         case LSFT(KC_E):
-            set_visual_direction(V_FORWARD);
-            register_motion(qk_mods | VIM_E, record);
-            return false;
         case KC_W:
         case VIM_W:
         case LSFT(KC_W):
             set_visual_direction(V_FORWARD);
-            if (record->event.pressed) {
-              register_code16(qk_mods | VIM_W);
-            } else {
-              unregister_code16(qk_mods | VIM_W);
-              tap_code16(qk_mods | VIM_W);
-              tap_code16(qk_mods | VIM_B);
-            }
+            register_motion(qk_mods | VIM_W, record);
             return false;
         case KC_0:
         case VIM_0:
