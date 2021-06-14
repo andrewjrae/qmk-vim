@@ -181,6 +181,9 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
             case KC_X:
                 tap_code16(VIM_X);
                 break;
+            case LSFT(KC_X):
+                tap_code16(VIM_SHIFT_X);
+                break;
 #ifdef VIM_COLON_CMDS
             case KC_COLON:
                 process_func = process_colon_cmd;

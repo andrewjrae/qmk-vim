@@ -23,6 +23,7 @@
 #define VIM_FIND VCMD(KC_F)
 #define VIM_SAVE VCMD(KC_S)
 #define VIM_X KC_DEL
+#define VIM_SHIFT_X KC_BSPC
 
 // Process function to handle text objects ie in or around word
 bool process_text_objects(uint16_t keycode, const keyrecord_t *record);
