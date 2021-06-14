@@ -66,21 +66,27 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
 
 #ifdef VIM_I_TEXT_OBJECTS
 static bool process_in_object(uint16_t keycode, const keyrecord_t *record) {
-    if (record->event.pressed) {
-        switch (keycode) {
-            case KC_W:
+    switch (keycode) {
+        case KC_W:
+            if (record->event.pressed) {
                 tap_code16(VIM_W);
                 tap_code16(LSFT(VIM_B));
+            } else {
                 action_func();
-                return false;
-            case KC_G:
+            }
+            return false;
+        case KC_G:
+            if (record->event.pressed) {
                 tap_code16(VCMD(KC_A));
+            } else {
                 action_func();
-                return false;
-            default:
+            }
+            return false;
+        default:
+            if (record->event.pressed) {
                 normal_mode();
-                return false;
-        }
+            }
+            return false;
     }
     return false;
 }
