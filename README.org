@@ -150,7 +150,7 @@ Once you hit ~.~ it goes through the recorded keys until it hits normal mode aga
 The default size of the recorded keys buffer is =64=, but can be modified with the =VIM_REPEAT_BUF_SIZE= macro.
 
 *** W Motions
-If the =VIM_W_BEGINNING_OF_WORD= macro is defined, the ~w~ and ~W~ motions (which are synonymous) will skip to the beginning of the next word by sending LCTL + RIGHT and then tapping LCTL + RIGHT, LCTL + LEFT on release. Otherwise, their default behavior is to imitate the ~e~ and ~E~ motions by sending LCTL + RIGHT. Note that enabling this feature currently causes unexpected side effects with actions such as ~cw~ and ~dw~, as well as those involving ~i~ and ~a~ text objects such as ~viw~ and ~vaw~ ([[https://github.com/andrewjrae/qmk-vim/pull/1][context]]).
+If the =VIM_W_BEGINNING_OF_WORD= macro is defined, the ~w~ and ~W~ motions (which are synonymous) will skip to the beginning of the next word by sending LCTL + RIGHT and then tapping LCTL + RIGHT, LCTL + LEFT on release. Otherwise, their default behavior is to imitate the ~e~ and ~E~ motions by sending LCTL + RIGHT. Note that enabling this feature currently causes unexpected side effects with actions such as ~cw~ and ~dw~, as well as those involving ~i~ and ~a~ text objects such as ~viw~ and ~vaw~ ([[https://github.com/andrewjrae/qmk-vim/pull/1#discussion_r650416367][context]]).
 
 * Configuration
 ** Setup
