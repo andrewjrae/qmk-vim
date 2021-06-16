@@ -16,6 +16,7 @@
   - [[#extra-features][Extra Features]]
     - [[#text-objects][Text Objects]]
     - [[#dot-repeat][Dot Repeat]]
+    - [[#w-motions][W Motions]]
 - [[#configuration][Configuration]]
   - [[#setup][Setup]]
   - [[#adding-keybinds][Adding Keybinds]]
@@ -23,7 +24,7 @@
   -  [[#displaying-modes][Displaying Modes]]
 
 * About
-This is project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
+This project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
 
 The other goal is to make it relatively plug and play in user keymaps, while still providing customization options.
 
@@ -32,17 +33,17 @@ The other goal is to make it relatively plug and play in user keymaps, while sti
 The core features are in in the tables below and takes up roughly 5% of at Atmega32u4.
 *** Motions
 Motions are available in [[#normal-mode][normal]] and [[#visual-mode][visual mode]], and can be composed with [[#actions][actions]]. Note that in the table below the mods shown are for Linux/Windows, however if =VIM_FOR_MAC= is defined then these should change to =LOPT=.
-| Vim Binding | Action       | Notes                                                                             |
-|-------------+--------------+-----------------------------------------------------------------------------------|
-| h           | LEFT         |                                                                                   |
-| j           | DOWN         |                                                                                   |
-| k           | UP           |                                                                                   |
-| l           | RIGHT        |                                                                                   |
-| w / W       | LCTL + RIGHT | This may act more like an =e= command depending on the text environment           |
-| e / E       | LCTL + RIGHT | This may act more like an =e= command depending on the text environment           |
-| b / B       | LCTL + LEFT  |                                                                                   |
-| 0 / ^       | HOME         | In some text environments this goes to the true start, or the first piece of text |
-| $           | END          |                                                                                   |
+| Vim Binding | Action       | Notes                                                                                                                             |
+|-------------+--------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| h           | LEFT         |                                                                                                                                   |
+| j           | DOWN         |                                                                                                                                   |
+| k           | UP           |                                                                                                                                   |
+| l           | RIGHT        |                                                                                                                                   |
+| e / E       | LCTL + RIGHT | This may act more like a =w= command depending on the text environment                                                            |
+| w / W       | LCTL + RIGHT | By default, this may act more like an =e= command depending on the text environment. Alternatively, see [[#w-motions][W motions]] |
+| b / B       | LCTL + LEFT  |                                                                                                                                   |
+| 0 / ^       | HOME         | In some text environments this goes to the true start, or the first piece of text                                                 |
+| $           | END          |                                                                                                                                   |
 
 *** Actions
 Change, delete, and yank actions are all supported and can be combined with [[#motions][motions]] and text objects in normal mode as you would expect. For example =cw= will change until the next word (or end of word depending on your text environment). Note that by default the =d= action will copy the deleted text to the clipboard.
@@ -80,6 +81,7 @@ however if =VIM_FOR_MAC= is defined then these should change to =LCMD=.
 | u           | LCTL + z                                        | This works /most/ places                        |
 | CTRL + r    | LCTL + y                                        | This may or may not work everywhere             |
 | x           | DELETE                                          |                                                 |
+| X           | BACKSPACE                                       |                                                 |
 
 Note that all keycodes chorded with CTRL, GUI, or ALT, that aren't bound to anything are let through. In other words, you can still alt tab and use shortcuts for whatever editor you're in.
 
@@ -95,7 +97,7 @@ However, with =BETTER_VISUAL_MODE= enabled the first direction moved in visual m
 Of course this approach breaks down if you double back on the cursor, but I find I don't do that all that often.
 
 *** Visual Line Mode
-Visual line modes is very similar to [[#visual-mode][visual mode]] as you would expect however only the ~j~ and ~k~ motions are supported and of course the entire line is selected.
+Visual line mode is very similar to [[#visual-mode][visual mode]] as you would expect however only the ~j~ and ~k~ motions are supported and of course the entire line is selected.
 However, there is no perfect way (that I know of) to select lines the way vim does easily. The way I used do it before I used vim, was to get myself to the start of the line then hit shift and up or down.
 Going down works almost as you'd expect in vim, but you'll always be a line behind since it doesn't highlight the line the cursor is currently on.
 Going up on the other hand will select the line the cursor is on, but it will always be missing the first line.
@@ -110,27 +112,28 @@ Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on th
 
 ** Extra Features
 In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros in your config.h.
-| Macro                 | Features Enabled/Disabled                                                                                              | Bytes (avr-gcc 8.3.0) |
-|-----------------------+------------------------------------------------------------------------------------------------------------------------+-----------------------|
-| =NO_VISUAL_MODE=      | Disables the normal visual mode.                                                                                       | +204 B                |
-| =NO_VISUAL_LINE_MODE= | Disables the normal visual line mode.                                                                                  | +222 B                |
-| =BETTER_VISUAL_MODE=  | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  | -196 B                |
-| =VIM_I_TEXT_OBJECTS=  | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. | -78 B                 |
-| =VIM_A_TEXT_OBJECTS=  | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  | -94 B                 |
-| =VIM_G_MOTIONS=       | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           | -118 B                |
-| =VIM_COLON_CMDS=      | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 | -68 B                 |
-| =VIM_PASTE_BEFORE=    | Adds the ~P~ command.                                                                                                  | -38 B                 |
-| =VIM_REPLACE=         | Adds the ~r~ command.                                                                                                  | -62 B                 |
-| =VIM_DOT_REPEAT=      | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     | -212 B                |
+| Macro                     | Features Enabled/Disabled                                                                                              | Bytes (avr-gcc 8.3.0) |
+|---------------------------+------------------------------------------------------------------------------------------------------------------------+-----------------------|
+| =NO_VISUAL_MODE=          | Disables the normal visual mode.                                                                                       | +204 B                |
+| =NO_VISUAL_LINE_MODE=     | Disables the normal visual line mode.                                                                                  | +222 B                |
+| =BETTER_VISUAL_MODE=      | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  | -196 B                |
+| =VIM_I_TEXT_OBJECTS=      | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. | -78 B                 |
+| =VIM_A_TEXT_OBJECTS=      | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  | -94 B                 |
+| =VIM_G_MOTIONS=           | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           | -118 B                |
+| =VIM_COLON_CMDS=          | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 | -68 B                 |
+| =VIM_PASTE_BEFORE=        | Adds the ~P~ command.                                                                                                  | -38 B                 |
+| =VIM_REPLACE=             | Adds the ~r~ command.                                                                                                  | -62 B                 |
+| =VIM_DOT_REPEAT=          | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     | -212 B                |
+| =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.       | TODO                  |
 
 With all the extra features enabled, the firmware takes up 1842 B of space which is roughly 6% of a pro-micro.
 
 *** Text Objects
-Unfortunately there is really no way to implement text objects properly, especially things like brackets. However, word objects are very possible in some form are quite possible.
+Unfortunately there is really no way to implement text objects properly, especially things like brackets. However, word objects in some form are quite possible.
 The tricky part is distinguishing between an inner and outer word, some editors will have a forward word jump go to the end of a word like vim's ~e~, while others will go to the start of the next, like vim's ~w~.
 
 It's easy to get an inner word if word jump acts like ~e~, since you can go to the end of the word, then hold shift and jump to the start.
-And similarly it's easy to get an outre word if word jump acts like ~w~, since you can go the start of the next word then hold shift and jump back to the start of your word.
+And similarly it's easy to get an outer word if word jump acts like ~w~, since you can go to the start of the next word then hold shift and jump back to the start of your word.
 However, getting an inner word with just ~w~ and ~b~ at your disposal isn't possible without using arrow keys which won't be consistent in scenarios where the word punctuated in some way.
 But, it is possible to get an outer word with ~b~ and ~e~. In vim terms, the sequence looks like ~eebvb~, now in vim that doesn't do exactly what we want, but with word jumps it does result in an outer word selection.
 
@@ -145,6 +148,9 @@ For example, typing ~ciw~, ~hello!~, will replace the underlying word with ~hell
 The way this works is that once an action starts, like ~c~ or ~D~, or even ~A~ all keycodes are recorded until we return to the normal mode state.
 Once you hit ~.~ it goes through the recorded keys until it hits normal mode again.
 The default size of the recorded keys buffer is =64=, but can be modified with the =VIM_REPEAT_BUF_SIZE= macro.
+
+*** W Motions
+If the =VIM_W_BEGINNING_OF_WORD= macro is defined, the ~w~ and ~W~ motions (which are synonymous) will skip to the beginning of the next word by sending LCTL + RIGHT and then tapping LCTL + RIGHT, LCTL + LEFT on release. Otherwise, their default behavior is to imitate the ~e~ and ~E~ motions by sending LCTL + RIGHT. Note that enabling this feature currently causes unexpected side effects with actions such as ~cw~ and ~dw~, as well as those involving ~i~ and ~a~ text objects such as ~viw~ and ~vaw~ ([[https://github.com/andrewjrae/qmk-vim/pull/1][context]]).
 
 * Configuration
 ** Setup
