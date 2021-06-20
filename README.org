@@ -21,7 +21,9 @@
   - [[#setup][Setup]]
   - [[#adding-keybinds][Adding Keybinds]]
   - [[#mac-support][Mac Support]]
-  -  [[#displaying-modes][Displaying Modes]]
+  - [[#displaying-modes][Displaying Modes]]
+- [[#contributing][Contributing]]
+  - [[#updating-readme-firmware-sizes][Updating Readme Firmware Sizes]]
 
 * About
 This project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
@@ -112,21 +114,19 @@ Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on th
 
 ** Extra Features
 In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros in your config.h.
-| Macro                     | Features Enabled/Disabled                                                                                              | Bytes (avr-gcc 8.3.0) |
-|---------------------------+------------------------------------------------------------------------------------------------------------------------+-----------------------|
-| =NO_VISUAL_MODE=          | Disables the normal visual mode.                                                                                       | +204 B                |
-| =NO_VISUAL_LINE_MODE=     | Disables the normal visual line mode.                                                                                  | +222 B                |
-| =BETTER_VISUAL_MODE=      | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  | -196 B                |
-| =VIM_I_TEXT_OBJECTS=      | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. | -78 B                 |
-| =VIM_A_TEXT_OBJECTS=      | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  | -94 B                 |
-| =VIM_G_MOTIONS=           | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           | -118 B                |
-| =VIM_COLON_CMDS=          | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 | -68 B                 |
-| =VIM_PASTE_BEFORE=        | Adds the ~P~ command.                                                                                                  | -38 B                 |
-| =VIM_REPLACE=             | Adds the ~r~ command.                                                                                                  | -62 B                 |
-| =VIM_DOT_REPEAT=          | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     | -212 B                |
-| =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.       | TODO                  |
-
-With all the extra features enabled, the firmware takes up 1842 B of space which is roughly 6% of a pro-micro.
+| Macro                     | Features Enabled/Disabled                                                                                              | Bytes (gcc 8.3.0) |
+|---------------------------+------------------------------------------------------------------------------------------------------------------------+-------------------|
+| =NO_VISUAL_MODE=          | Disables the normal visual mode.                                                                                       | +256 B            |
+| =NO_VISUAL_LINE_MODE=     | Disables the normal visual line mode.                                                                                  | +336 B            |
+| =BETTER_VISUAL_MODE=      | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  | -174 B            |
+| =VIM_I_TEXT_OBJECTS=      | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. | -108 B            |
+| =VIM_A_TEXT_OBJECTS=      | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  | -124 B            |
+| =VIM_G_MOTIONS=           | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           | -116 B            |
+| =VIM_COLON_CMDS=          | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 | -72 B             |
+| =VIM_PASTE_BEFORE=        | Adds the ~P~ command.                                                                                                  | -60 B             |
+| =VIM_REPLACE=             | Adds the ~r~ command.                                                                                                  | -70 B             |
+| =VIM_DOT_REPEAT=          | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     | -232 B            |
+| =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.       | -84 B             |
 
 *** Text Objects
 Unfortunately there is really no way to implement text objects properly, especially things like brackets. However, word objects in some form are quite possible.
@@ -287,4 +287,12 @@ if (vim_mode_enabled()) {
             oled_write_P(PSTR("?????\n"), false);
             break;
     }
+#+end_src
+
+* Contributing
+** Updating Readme Firmware Sizes
+If you'd like to submit a pull request, please update the [[#extra-features][table with the firmware sizes for each feature]]. This can be done automatically by running the following commands in the root directory of this repository (it may take a few minutes, since it recompiles for each feature in the table):
+#+begin_src bash
+docker build -t qmk-vim-update-readme update-readme
+docker run -v $PWD:/qmk_firmware/keyboards/uno/keymaps/qmk-vim-update-readme/qmk-vim qmk-vim-update-readme
 #+end_src
