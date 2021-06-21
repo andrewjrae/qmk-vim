@@ -242,7 +242,7 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     if (!process_motions(keycode, record, QK_LSFT)) {
         return false;
     }
-#ifdef VIM_TEXT_OBJECTS
+#ifdef _VIM_TEXT_OBJECTS
     if (!process_text_objects(keycode, record)) {
         return false;
     }
