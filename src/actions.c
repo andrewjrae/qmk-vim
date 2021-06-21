@@ -3,10 +3,6 @@
 #include "process_func.h"
 
 
-#if defined (VIM_I_TEXT_OBJECTS) || defined (VIM_A_TEXT_OBJECTS)
-#define _VIM_TEXT_OBJECTS
-#endif
-
 // Function pointer type for executing actions
 typedef void (*action_func_t)(void);
 
