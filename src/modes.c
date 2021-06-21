@@ -77,7 +77,7 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
 #endif
 
     // handle motions on their own so they can be pressed and held
-    if (!process_motions(keycode, record, 0)) {
+    if (process_motions(keycode, record, 0) != NO_MOTION) {
         return false;
     }
     if (record->event.pressed) {
@@ -239,7 +239,7 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
         return false;
     }
     // handle motions on their own so they can be pressed and held
-    if (!process_motions(keycode, record, QK_LSFT)) {
+    if (process_motions(keycode, record, QK_LSFT) != NO_MOTION) {
         return false;
     }
 #ifdef _VIM_TEXT_OBJECTS

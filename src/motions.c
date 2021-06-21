@@ -16,25 +16,29 @@ void register_motion(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
         if (motion_counter > 1) {
             tap_code16(keycode);
-        } else {
-            register_code16(keycode);
+            return;
         }
+        register_code16(keycode);
     } else {
         unregister_code16(keycode);
     }
 }
 
-bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods) {
-    // note that the directions don't do anything unless BETTER_VISUAL_MODE is defined
+vim_motion_processed_t process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods) {
     if (keycode >= KC_1 && keycode <= KC_0) {
         if (record->event.pressed) {
             motion_counter *= 10;
-            motion_counter += keycode == KC_0 ? 0 : keycode - KC_1 + 1;
+            if (keycode != KC_0) {
+                motion_counter += keycode - KC_1 + 1;
+            }
         }
-        return false;
+        if (motion_counter > 0) {
+            return NUMBER_PROCESSED;
+        }
     }
     // make motion counter 1 if it is 0
     motion_counter = motion_counter ? motion_counter : 1;
+    // note that the directions don't do anything unless BETTER_VISUAL_MODE is defined
     for (int i = 0; i < motion_counter; i++) {
         switch (keycode) {
         case KC_H:
@@ -68,14 +72,13 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
         case LSFT(KC_W):
 #ifdef VIM_W_BEGINNING_OF_WORD
             set_visual_direction(V_FORWARD);
-            if (record->event.pressed) {
-              register_code16(qk_mods | VIM_W);
-            } else {
-              unregister_code16(qk_mods | VIM_W);
-              tap_code16(qk_mods | VIM_W);
-              tap_code16(qk_mods | VIM_B);
+            register_motion(qk_mods | VIM_W, record);
+            if (!record->event.pressed) {
+                /* unregister_code16(qk_mods | VIM_W); */
+                tap_code16(qk_mods | VIM_W);
+                tap_code16(qk_mods | VIM_B);
             }
-            return false;
+            break;
 #endif
         case KC_E:
         case LSFT(KC_E):
@@ -89,15 +92,15 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
             register_motion(qk_mods | VIM_0, record);
             break;
         case KC_DLR:
-        case VIM_DLR:
+        case VIM_DLR: // $
             set_visual_direction(V_FORWARD);
             register_motion(qk_mods | VIM_DLR, record);
             break;
         default:
             motion_counter = 0;
-            return true;
+            return NO_MOTION;
         }
     }
     motion_counter = 0;
-    return false;
+    return MOTION_PROCESSED;
 }

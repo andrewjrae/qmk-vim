@@ -51,9 +51,17 @@ typedef enum {
     V_BACKWARD,
 } visual_direction_t;
 
+// An enum for the return type of process motion, since some things
+// need to distinguish between a number being process for numbered jumps
+typedef enum {
+    MOTION_PROCESSED = 0,
+    NO_MOTION = 1,
+    NUMBER_PROCESSED,
+} vim_motion_processed_t;
+
 // Function to set the global visual direction if it is currently unset
 void set_visual_direction(visual_direction_t dir);
 
 // Register one of the basic vim motions in a fashion where they can be held down.
 void register_motion(uint16_t keycode, const keyrecord_t *record);
-bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods);
+vim_motion_processed_t process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods);
