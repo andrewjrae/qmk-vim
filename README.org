@@ -17,6 +17,7 @@
     - [[#text-objects][Text Objects]]
     - [[#dot-repeat][Dot Repeat]]
     - [[#w-motions][W Motions]]
+    - [[#numbered-jumps][Numbered Jumps]]
 - [[#configuration][Configuration]]
   - [[#setup][Setup]]
   - [[#adding-keybinds][Adding Keybinds]]
@@ -70,21 +71,21 @@ The =paste_action()= handles pasting, which is simple for non lines, but most of
 *** Normal Mode
 This below tables lists all of the commands not covered by the [[#motions][motions]] and [[#actions][actions]] sections . Note that in the table below the mods shown are for Linux/Windows,
 however if =VIM_FOR_MAC= is defined then these should change to =LCMD=.
-| Vim Binding | Action                                          | Notes                                           |
-|-------------+-------------------------------------------------+-------------------------------------------------|
-| i           | [[#insert-mode][insert_mode()]]                 |                                                 |
-| I           | HOME, [[#insert-mode][insert_mode()]]           |                                                 |
-| a           | RIGHT, [[#insert-mode][insert_mode()]]          |                                                 |
-| A           | END, [[#insert-mode][insert_mode()]]            |                                                 |
-| o           | END, ENTER, [[#insert-mode][insert_mode()]]     |                                                 |
-| O           | HOME, ENTER, UP [[#insert-mode][insert_mode()]] |                                                 |
-| v           | [[#visual-mode][visual_mode()]]                 |                                                 |
-| V           | [[#visual-line-mode][visual_line_mode()]]       |                                                 |
-| p           | [[#paste-action][paste_action()]]               |                                                 |
-| u           | LCTL + z                                        | This works /most/ places                        |
-| CTRL + r    | LCTL + y                                        | This may or may not work everywhere             |
-| x           | DELETE                                          |                                                 |
-| X           | BACKSPACE                                       |                                                 |
+| Vim Binding | Action                                          | Notes                               |
+|-------------+-------------------------------------------------+-------------------------------------|
+| i           | [[#insert-mode][insert_mode()]]                 |                                     |
+| I           | HOME, [[#insert-mode][insert_mode()]]           |                                     |
+| a           | RIGHT, [[#insert-mode][insert_mode()]]          |                                     |
+| A           | END, [[#insert-mode][insert_mode()]]            |                                     |
+| o           | END, ENTER, [[#insert-mode][insert_mode()]]     |                                     |
+| O           | HOME, ENTER, UP [[#insert-mode][insert_mode()]] |                                     |
+| v           | [[#visual-mode][visual_mode()]]                 |                                     |
+| V           | [[#visual-line-mode][visual_line_mode()]]       |                                     |
+| p           | [[#paste-action][paste_action()]]               |                                     |
+| u           | LCTL + z                                        | This works /most/ places            |
+| CTRL + r    | LCTL + y                                        | This may or may not work everywhere |
+| x           | DELETE                                          |                                     |
+| X           | BACKSPACE                                       |                                     |
 
 Note that all keycodes chorded with CTRL, GUI, or ALT, that aren't bound to anything are let through. In other words, you can still alt tab and use shortcuts for whatever editor you're in.
 
@@ -115,23 +116,24 @@ Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on th
 
 ** Extra Features
 In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros in your config.h.
-| Macro                     | Features Enabled/Disabled                                                                                              | Bytes (gcc 8.3.0) |
-|---------------------------+------------------------------------------------------------------------------------------------------------------------+-------------------|
-| =NO_VISUAL_MODE=          | Disables the normal visual mode.                                                                                       | +256 B            |
-| =NO_VISUAL_LINE_MODE=     | Disables the normal visual line mode.                                                                                  | +336 B            |
-| =BETTER_VISUAL_MODE=      | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                  | -174 B            |
-| =VIM_I_TEXT_OBJECTS=      | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details. | -108 B            |
-| =VIM_A_TEXT_OBJECTS=      | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                  | -124 B            |
-| =VIM_G_MOTIONS=           | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                           | -116 B            |
-| =VIM_COLON_CMDS=          | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                 | -72 B             |
-| =VIM_PASTE_BEFORE=        | Adds the ~P~ command.                                                                                                  | -60 B             |
-| =VIM_REPLACE=             | Adds the ~r~ command.                                                                                                  | -70 B             |
-| =VIM_DOT_REPEAT=          | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                     | -232 B            |
-| =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.       | -84 B             |
+| Macro                     | Features Enabled/Disabled                                                                                                         | Bytes (gcc 8.3.0) |
+|---------------------------+-----------------------------------------------------------------------------------------------------------------------------------+-------------------|
+| =NO_VISUAL_MODE=          | Disables the normal visual mode.                                                                                                  | +256 B            |
+| =NO_VISUAL_LINE_MODE=     | Disables the normal visual line mode.                                                                                             | +336 B            |
+| =BETTER_VISUAL_MODE=      | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                             | -174 B            |
+| =VIM_I_TEXT_OBJECTS=      | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details.            | -122 B            |
+| =VIM_A_TEXT_OBJECTS=      | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                             | -138 B            |
+| =VIM_G_MOTIONS=           | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                                      | -116 B            |
+| =VIM_COLON_CMDS=          | Adds the colon command state, but only the ~w~ and ~q~ commands are supported (can be in combination).                            | -72 B             |
+| =VIM_PASTE_BEFORE=        | Adds the ~P~ command.                                                                                                             | -60 B             |
+| =VIM_REPLACE=             | Adds the ~r~ command.                                                                                                             | -76 B             |
+| =VIM_DOT_REPEAT=          | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                                | -232 B            |
+| =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.                  | -104 B            |
+| =VIM_NUMBERED_JUMPS=      | Adds the ability to do numbered motions, ie ~10j~ or ~5w~, be wary of large numbers however, as they can freeze up your keyboard. | -402 B            |
 
 *** Text Objects
 Unfortunately there is really no way to implement text objects properly, especially things like brackets. However, word objects in some form are quite possible.
-The tricky part is distinguishing between an inner and outer word, some editors will have a forward word jump go to the end of a word like vim's ~e~, while others will go to the start of the next, like vim's ~w~.
+The tricky part is distinguishing between an inner and outer word, some editors will have a forward word jump go to the end of a word like vim''s ~w~.
 
 It's easy to get an inner word if word jump acts like ~e~, since you can go to the end of the word, then hold shift and jump to the start.
 And similarly it's easy to get an outer word if word jump acts like ~w~, since you can go to the start of the next word then hold shift and jump back to the start of your word.
@@ -152,6 +154,9 @@ The default size of the recorded keys buffer is =64=, but can be modified with t
 
 *** W Motions
 If the =VIM_W_BEGINNING_OF_WORD= macro is defined, the ~w~ and ~W~ motions (which are synonymous) will skip to the beginning of the next word by sending LCTL + RIGHT and then tapping LCTL + RIGHT, LCTL + LEFT on release. Otherwise, their default behavior is to imitate the ~e~ and ~E~ motions by sending LCTL + RIGHT. Note that enabling this feature currently causes unexpected side effects with actions such as ~cw~ and ~dw~, where the ~w~ motion acts like an ~e~ motion  ([[https://github.com/andrewjrae/qmk-vim/pull/1#discussion_r650416367][context]]).
+
+*** Numbered Jumps
+The numbered jumps feature allows users to do repeat motions a specified number of times just like in vim. By enabling =VIM_NUMBERED_JUMPS=, you can now type ~10j~ to jump down 10 lines, or you can type ~c3w~ to change the next three words.
 
 * Configuration
 ** Setup

@@ -223,6 +223,7 @@ static bool process_replace_action(uint16_t keycode, const keyrecord_t *record) 
         if (keycode != KC_ESC) {
             tap_code(KC_DELETE);
             tap_code16(keycode);
+            tap_code(KC_LEFT);
         }
         normal_mode();
     }
