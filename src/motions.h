@@ -21,11 +21,11 @@
 #define VMOTION LCTL
 
 #define VIM_0 KC_HOME
-#define VIM_HOME() tap_code(VIM_0); // all this just to save a few bytes on a function call
+#define VIM_HOME() tap_code(VIM_0);
 #define VIM_SHIFT_HOME() tap_code16(LSFT(VIM_0));
 
 #define VIM_DLR KC_END
-#define VIM_END() tap_code(VIM_DLR); // all this just to save a few bytes on a function call
+#define VIM_END() tap_code(VIM_DLR);
 #define VIM_SHIFT_END() tap_code16(LSFT(VIM_DLR));
 
 #endif

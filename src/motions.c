@@ -1,4 +1,5 @@
 #include "motions.h"
+#include "numbered_actions.h"
 
 #ifdef BETTER_VISUAL_MODE
 visual_direction_t visual_direction = V_NONE;
@@ -11,7 +12,6 @@ void set_visual_direction(visual_direction_t dir) {
 #endif
 }
 
-static uint16_t motion_counter = 0;
 void register_motion(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
 #ifdef VIM_NUMBERED_JUMPS
@@ -27,23 +27,10 @@ void register_motion(uint16_t keycode, const keyrecord_t *record) {
 }
 
 vim_motion_processed_t process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods) {
-#ifdef VIM_NUMBERED_JUMPS
-    if (keycode >= KC_1 && keycode <= KC_0) {
-        if (record->event.pressed) {
-            motion_counter *= 10;
-            if (keycode != KC_0) {
-                motion_counter += keycode - KC_1 + 1;
-            }
-        }
-        if (motion_counter > 0) {
-            return NUMBER_PROCESSED;
-        }
+    if (process_numbers(keycode, record)) {
+        return NUMBER_PROCESSED;
     }
-    // make motion counter 1 if it is 0
-    motion_counter = motion_counter ? motion_counter : 1;
-    // note that the directions don't do anything unless BETTER_VISUAL_MODE is defined
-    for (int i = 0; i < motion_counter; i++) {
-#endif
+    DO_NUMBERED_ACTION(
         switch (keycode) {
         case KC_H:
         case VIM_H:
@@ -104,9 +91,6 @@ vim_motion_processed_t process_motions(uint16_t keycode, const keyrecord_t *reco
             motion_counter = 0;
             return NO_MOTION;
         }
-#ifdef VIM_NUMBERED_JUMPS
-    }
-    motion_counter = 0;
-#endif
+    );
     return MOTION_PROCESSED;
 }
