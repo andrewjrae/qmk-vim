@@ -15,6 +15,7 @@ void set_visual_direction(visual_direction_t dir) {
 void register_motion(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed) {
 #ifdef VIM_NUMBERED_JUMPS
+        extern int16_t motion_counter;
         if (motion_counter > 1) {
             tap_code16(keycode);
             return;
@@ -26,10 +27,7 @@ void register_motion(uint16_t keycode, const keyrecord_t *record) {
     }
 }
 
-vim_motion_processed_t process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods) {
-    if (process_numbers(keycode, record)) {
-        return NUMBER_PROCESSED;
-    }
+bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods) {
     DO_NUMBERED_ACTION(
         switch (keycode) {
         case KC_H:
@@ -88,9 +86,9 @@ vim_motion_processed_t process_motions(uint16_t keycode, const keyrecord_t *reco
             register_motion(qk_mods | VIM_DLR, record);
             break;
         default:
-            motion_counter = 0;
-            return NO_MOTION;
+            /* motion_counter = 0; */
+            return true;
         }
     );
-    return MOTION_PROCESSED;
+    return false;
 }

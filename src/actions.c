@@ -1,4 +1,5 @@
 #include "actions.h"
+#include "numbered_actions.h"
 #include "motions.h"
 #include "process_func.h"
 
@@ -23,12 +24,14 @@ static bool yanked_line;
 
 // Function to process key codes when in an action sequence
 static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
-    vim_motion_processed_t motion_ret = process_motions(keycode, record, QK_LSFT);
-    if (motion_ret != NO_MOTION) {
-        if (motion_ret == MOTION_PROCESSED) {
-            clear_keyboard();
-            action_func();
-        }
+    // process numbers for numbered actions
+    if (!process_numbers(keycode, record)) {
+        return false;
+    }
+    // process motion and exit call action func if there was one
+    if (!process_motions(keycode, record, QK_LSFT)) {
+        clear_keyboard();
+        action_func();
         return false;
     }
 
