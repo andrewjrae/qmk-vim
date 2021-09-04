@@ -78,9 +78,11 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
 #endif
 
     // process numbers for numbered actions
+#ifdef VIM_NUMBERED_JUMPS
     if (!process_numbers(keycode, record)) {
         return false;
     }
+#endif
     // handle motions on their own so they can be pressed and held
     if (!process_motions(keycode, record, 0)) {
         return false;
@@ -244,9 +246,11 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
         return false;
     }
     // process numbers for numbered actions
+#ifdef VIM_NUMBERED_JUMPS
     if (!process_numbers(keycode, record)) {
         return false;
     }
+#endif
     // handle motions on their own so they can be pressed and held
     if (!process_motions(keycode, record, QK_LSFT)) {
         return false;
@@ -307,9 +311,11 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
         return false;
     }
     // process numbers for numbered actions
+#ifdef VIM_NUMBERED_JUMPS
     if (!process_numbers(keycode, record)) {
         return false;
     }
+#endif
     // handle motions on their own so they can be pressed and held
     switch (keycode) {
         case KC_J:

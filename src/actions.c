@@ -25,9 +25,11 @@ static bool yanked_line;
 // Function to process key codes when in an action sequence
 static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
     // process numbers for numbered actions
+#ifdef VIM_NUMBERED_JUMPS
     if (!process_numbers(keycode, record)) {
         return false;
     }
+#endif
     // process motion and exit call action func if there was one
     if (!process_motions(keycode, record, QK_LSFT)) {
         clear_keyboard();
@@ -48,12 +50,25 @@ static bool process_vim_action(uint16_t keycode, const keyrecord_t *record) {
             if (action_func == change_action) {
                 VIM_HOME();
                 VIM_SHIFT_END();
+#ifdef VIM_NUMBERED_JUMPS
+                extern int16_t motion_counter;
+                if (motion_counter > 0) {
+                    tap_code16(LSFT(KC_RIGHT));
+                    decrement_motion_counter();
+                    DO_NUMBERED_ACTION(
+                        tap_code16(LSFT(KC_DOWN));
+                    );
+                }
+#endif
                 action_func();
             }
             else {
                 VIM_END();
                 tap_code(KC_RIGHT);
-                tap_code16(LSFT(KC_UP));
+                tap_code(KC_UP);
+                DO_NUMBERED_ACTION(
+                    tap_code16(LSFT(KC_DOWN));
+                );
                 action_func();
                 yanked_line = true;
             }

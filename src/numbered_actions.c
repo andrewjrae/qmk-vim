@@ -16,3 +16,9 @@ bool process_numbers(uint16_t keycode, const keyrecord_t *record) {
 #endif
     return true;
 }
+
+inline void decrement_motion_counter(void) {
+#ifdef VIM_NUMBERED_JUMPS
+    motion_counter -= motion_counter > 0;
+#endif
+}
