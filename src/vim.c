@@ -46,6 +46,20 @@ void toggle_vim_mode(void) {
     }
 }
 
+#ifdef ONESHOT_VIM
+static bool oneshot_vim_enabled = false;
+// Start vim mode
+void start_oneshot_vim(void) {
+    oneshot_vim_enabled = true;
+    enable_vim_mode();
+}
+// Stop vim mode
+void stop_oneshot_vim(void) {
+    oneshot_vim_enabled = false;
+    disable_vim_mode();
+}
+#endif
+
 // Process keycode for leader sequences
 bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
     if (vim_enabled) {
@@ -79,8 +93,9 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
         bool do_process_key = process_func(keycode, record);
 
 #ifdef VIM_DOT_REPEAT
-        if (record->event.pressed)
+        if (record->event.pressed) {
             add_repeat_keycode(keycode);
+        }
 #endif
 
         set_mods(mods);
@@ -88,6 +103,12 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
         if (do_process_key) {
             set_oneshot_mods(oneshot_mods);
         }
+
+#ifdef ONESHOT_VIM
+        if (oneshot_vim_enabled && (keycode == KC_ESC)) {
+            stop_oneshot_vim();
+        }
+#endif
 
         return do_process_key;
     }
