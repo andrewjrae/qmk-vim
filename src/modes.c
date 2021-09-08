@@ -1,4 +1,5 @@
 #include "modes.h"
+#include "numbered_actions.h"
 #include "motions.h"
 #include "actions.h"
 #include "process_func.h"
@@ -76,8 +77,14 @@ bool process_normal_mode(uint16_t keycode, const keyrecord_t *record) {
     #define NO_RECORD_ACTION()
 #endif
 
+    // process numbers for numbered actions
+#ifdef VIM_NUMBERED_JUMPS
+    if (!process_numbers(keycode, record)) {
+        return false;
+    }
+#endif
     // handle motions on their own so they can be pressed and held
-    if (process_motions(keycode, record, 0) != NO_MOTION) {
+    if (!process_motions(keycode, record, 0)) {
         return false;
     }
     if (record->event.pressed) {
@@ -238,8 +245,14 @@ bool process_visual_mode(uint16_t keycode, const keyrecord_t *record) {
     if (!process_visual_mode_user(keycode, record)) {
         return false;
     }
+    // process numbers for numbered actions
+#ifdef VIM_NUMBERED_JUMPS
+    if (!process_numbers(keycode, record)) {
+        return false;
+    }
+#endif
     // handle motions on their own so they can be pressed and held
-    if (process_motions(keycode, record, QK_LSFT) != NO_MOTION) {
+    if (!process_motions(keycode, record, QK_LSFT)) {
         return false;
     }
 #ifdef _VIM_TEXT_OBJECTS
@@ -297,6 +310,12 @@ bool process_visual_line_mode(uint16_t keycode, const keyrecord_t *record) {
     if (!process_visual_line_mode_user(keycode, record)) {
         return false;
     }
+    // process numbers for numbered actions
+#ifdef VIM_NUMBERED_JUMPS
+    if (!process_numbers(keycode, record)) {
+        return false;
+    }
+#endif
     // handle motions on their own so they can be pressed and held
     switch (keycode) {
         case KC_J:

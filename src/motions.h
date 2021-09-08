@@ -21,11 +21,11 @@
 #define VMOTION LCTL
 
 #define VIM_0 KC_HOME
-#define VIM_HOME() tap_code(VIM_0); // all this just to save a few bytes on a function call
+#define VIM_HOME() tap_code(VIM_0);
 #define VIM_SHIFT_HOME() tap_code16(LSFT(VIM_0));
 
 #define VIM_DLR KC_END
-#define VIM_END() tap_code(VIM_DLR); // all this just to save a few bytes on a function call
+#define VIM_END() tap_code(VIM_DLR);
 #define VIM_SHIFT_END() tap_code16(LSFT(VIM_DLR));
 
 #endif
@@ -51,17 +51,9 @@ typedef enum {
     V_BACKWARD,
 } visual_direction_t;
 
-// An enum for the return type of process motion, since some things
-// need to distinguish between a number being process for numbered jumps
-typedef enum {
-    MOTION_PROCESSED = 0,
-    NO_MOTION = 1,
-    NUMBER_PROCESSED,
-} vim_motion_processed_t;
-
 // Function to set the global visual direction if it is currently unset
 void set_visual_direction(visual_direction_t dir);
 
 // Register one of the basic vim motions in a fashion where they can be held down.
 void register_motion(uint16_t keycode, const keyrecord_t *record);
-vim_motion_processed_t process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods);
+bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods);
