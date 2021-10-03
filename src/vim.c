@@ -47,16 +47,30 @@ void toggle_vim_mode(void) {
 }
 
 #ifdef ONESHOT_VIM
+extern bool process_normal_mode(uint16_t keycode, const keyrecord_t *record);
+extern bool process_insert_mode(uint16_t keycode, const keyrecord_t *record);
+
 static bool oneshot_vim_enabled = false;
 // Start vim mode
 void start_oneshot_vim(void) {
     oneshot_vim_enabled = true;
+    last_process_func = process_normal_mode;
     enable_vim_mode();
 }
 // Stop vim mode
 void stop_oneshot_vim(void) {
     oneshot_vim_enabled = false;
     disable_vim_mode();
+}
+static void vim_oneshot_termination(void) {
+    static process_func_t last_process_func;
+    if (oneshot_vim_enabled &&
+        (keycode == KC_ESC ||
+            process_func == process_insert_mode ||
+            (process_func == process_normal_mode && last_process_func != process_func))) {
+        stop_oneshot_vim();
+    }
+    last_process_func = process_func;
 }
 #endif
 
@@ -105,9 +119,8 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
         }
 
 #ifdef ONESHOT_VIM
-        if (oneshot_vim_enabled && (keycode == KC_ESC)) {
-            stop_oneshot_vim();
-        }
+        // this function checks for oneshot termination conditions and stops if applicable
+        vim_oneshot_termination();
 #endif
 
         return do_process_key;
