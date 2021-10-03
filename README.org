@@ -28,15 +28,21 @@
   - [[#updating-readme-firmware-sizes][Updating Readme Firmware Sizes]]
 
 * About
-This project aims to emulate as much of vim as possible in QMK userspace. The idea is to use clever combinations of shift, home, end, and control + arrow keys to emulate vim's modal editing and motions.
+This project aims to emulate as much of vim as possible in QMK userspace. The
+idea is to use clever combinations of shift, home, end, and control + arrow keys
+to emulate vim's modal editing and motions.
 
-The other goal is to make it relatively plug and play in user keymaps, while still providing customization options.
+The other goal is to make it relatively plug and play in user keymaps, while
+still providing customization options.
 
 * Features
 ** Core Features
-The core features are in in the tables below and takes up roughly 5% of at Atmega32u4.
+The core features are in in the tables below and takes up roughly 5% of at
+Atmega32u4.
 *** Motions
-Motions are available in [[#normal-mode][normal]] and [[#visual-mode][visual mode]], and can be composed with [[#actions][actions]]. Note that in the table below the mods shown are for Linux/Windows, however if =VIM_FOR_MAC= is defined then these should change to =LOPT=.
+Motions are available in [[#normal-mode][normal]] and [[#visual-mode][visual mode]], and can be composed with
+[[#actions][actions]]. Note that in the table below the mods shown are for Linux/Windows,
+however if =VIM_FOR_MAC= is defined then these should change to =LOPT=.
 | Vim Binding | Action       | Notes                                                                                                                             |
 |-------------+--------------+-----------------------------------------------------------------------------------------------------------------------------------|
 | h           | LEFT         |                                                                                                                                   |
@@ -50,9 +56,13 @@ Motions are available in [[#normal-mode][normal]] and [[#visual-mode][visual mod
 | $           | END          |                                                                                                                                   |
 
 *** Actions
-Change, delete, and yank actions are all supported and can be combined with [[#motions][motions]] and text objects in normal mode as you would expect. For example =cw= will change until the next word (or end of word depending on your text environment). Note that by default the =d= action will copy the deleted text to the clipboard.
+Change, delete, and yank actions are all supported and can be combined with
+[[#motions][motions]] and text objects in normal mode as you would expect. For example =cw= will
+change until the next word (or end of word depending on your text environment).
+Note that by default the =d= action will copy the deleted text to the clipboard.
 
-In visual mode each action can be accessed with =c=, =d=, and =y= respectively and they will act on the currently selected visual area.
+In visual mode each action can be accessed with =c=, =d=, and =y= respectively and
+they will act on the currently selected visual area.
 
 Normal mode also supports these commands:
 | Vim Binding | Action                              | Notes                                              |
@@ -66,11 +76,20 @@ Normal mode also supports these commands:
 | Y           | Yank to end of line                 |                                                    |
 
 **** Paste Action
-The =paste_action()= handles pasting, which is simple for non lines, but most of the time, I'm pasting lines so this function attempts to consistently handle pasting lines. Yanks and deletes of lines are tracked through the =yanked_line= global, the paste action then pastes accordingly. For copying and pasting lines the line(s) the selection is made from the very start of the line below, up to start of the first line. See the [[#visual-line-mode][visual line mode]] section for more info on how lines are selected. There is also an optional =paste_before_action()=, enabled with the =VIM_PASTE_BEFORE= macro.
+The =paste_action()= handles pasting, which is simple for non lines, but most of
+the time, I'm pasting lines so this function attempts to consistently handle
+pasting lines. Yanks and deletes of lines are tracked through the =yanked_line=
+global, the paste action then pastes accordingly. For copying and pasting lines
+the line(s) the selection is made from the very start of the line below, up to
+start of the first line. See the [[#visual-line-mode][visual line mode]] section for more info on how
+lines are selected. There is also an optional =paste_before_action()=, enabled
+with the =VIM_PASTE_BEFORE= macro.
 
 *** Normal Mode
-This below tables lists all of the commands not covered by the [[#motions][motions]] and [[#actions][actions]] sections . Note that in the table below the mods shown are for Linux/Windows,
-however if =VIM_FOR_MAC= is defined then these should change to =LCMD=.
+This below tables lists all of the commands not covered by the [[#motions][motions]] and
+[[#actions][actions]] sections . Note that in the table below the mods shown are for
+Linux/Windows, however if =VIM_FOR_MAC= is defined then these should change to
+=LCMD=.
 | Vim Binding | Action                                          | Notes                               |
 |-------------+-------------------------------------------------+-------------------------------------|
 | i           | [[#insert-mode][insert_mode()]]                 |                                     |
@@ -87,32 +106,52 @@ however if =VIM_FOR_MAC= is defined then these should change to =LCMD=.
 | x           | DELETE                                          |                                     |
 | X           | BACKSPACE                                       |                                     |
 
-Note that all keycodes chorded with CTRL, GUI, or ALT, that aren't bound to anything are let through. In other words, you can still alt tab and use shortcuts for whatever editor you're in.
+Note that all keycodes chorded with CTRL, GUI, or ALT, that aren't bound to
+anything are let through. In other words, you can still alt tab and use
+shortcuts for whatever editor you're in.
 
 *** Insert Mode
-Insert mode is rather straight forward, all keystrokes are passed through as normal with the exception of escape, which brings you back to [[#normal-mode][normal mode]].
+Insert mode is rather straight forward, all keystrokes are passed through as
+normal with the exception of escape, which brings you back to [[#normal-mode][normal mode]].
 
 *** Visual Mode
-Visual mode behaves largely as one would expect, all [[#motions][motions]] and [[#actions][actions]] are supported. Escape of course returns you to [[#normal-mode][normal mode]].
-Note that hitting escape may move your cursor unexpectedly, especially if you don't have =BETTER_VISUAL_MODE= enabled.
-This is because there isn't a good way to just deselect text in "standard" editing, the best way is to move the text cursor with the arrow keys.
-The trouble for us is choosing which way to move, by default we always move right.
-However, with =BETTER_VISUAL_MODE= enabled the first direction moved in visual mode is recorded so that we can move the cursor to either the left or right or the selection as required.
-Of course this approach breaks down if you double back on the cursor, but I find I don't do that all that often.
+Visual mode behaves largely as one would expect, all [[#motions][motions]] and [[#actions][actions]] are
+supported. Escape of course returns you to [[#normal-mode][normal mode]].  Note that hitting
+escape may move your cursor unexpectedly, especially if you don't have
+=BETTER_VISUAL_MODE= enabled.  This is because there isn't a good way to just
+deselect text in "standard" editing, the best way is to move the text cursor
+with the arrow keys.  The trouble for us is choosing which way to move, by
+default we always move right.  However, with =BETTER_VISUAL_MODE= enabled the
+first direction moved in visual mode is recorded so that we can move the cursor
+to either the left or right or the selection as required.  Of course this
+approach breaks down if you double back on the cursor, but I find I don't do
+that all that often.
 
 *** Visual Line Mode
-Visual line mode is very similar to [[#visual-mode][visual mode]] as you would expect however only the ~j~ and ~k~ motions are supported and of course the entire line is selected.
-However, there is no perfect way (that I know of) to select lines the way vim does easily. The way I used do it before I used vim, was to get myself to the start of the line then hit shift and up or down.
-Going down works almost as you'd expect in vim, but you'll always be a line behind since it doesn't highlight the line the cursor is currently on.
-Going up on the other hand will select the line the cursor is on, but it will always be missing the first line.
-So neither solution quite works on it's own, =BETTER_VISUAL_MODE= does mostly fix these issues, but at the price of a larger compile size, hence why it's not on by default.
+Visual line mode is very similar to [[#visual-mode][visual mode]] as you would expect however only
+the ~j~ and ~k~ motions are supported and of course the entire line is selected.
+However, there is no perfect way (that I know of) to select lines the way vim
+does easily. The way I used do it before I used vim, was to get myself to the
+start of the line then hit shift and up or down.  Going down works almost as
+you'd expect in vim, but you'll always be a line behind since it doesn't
+highlight the line the cursor is currently on.  Going up on the other hand will
+select the line the cursor is on, but it will always be missing the first line.
+So neither solution quite works on it's own, =BETTER_VISUAL_MODE= does mostly fix
+these issues, but at the price of a larger compile size, hence why it's not on
+by default.
 
-A note on the default implementation, since most programming environments make the home key go to the start of the indent or the actual start of the line dynamically, consistently getting to the start of a line isn't as easy as hitting home.
-The most consistent way I've found is to hit end on the line above, and then right arrow your way to the start of the next line.
-This works as long as there is no line wrapping, so in the default implementation, entering visual line mode sends ~KC_END~, ~KC_RIGHT~, ~LSFT(KC_UP)~.
-Not only is this quite consistent, it also immediately highlights the current line just as you would expect.
-The only downside with the default implementation is that if you then try to go down that first line will be deselected, so you have to start your visual selection a line above when moving downwards.
-Of course =BETTER_VISUAL_MODE= fixes this as long as you don't double back on the cursor.
+A note on the default implementation, since most programming environments make
+the home key go to the start of the indent or the actual start of the line
+dynamically, consistently getting to the start of a line isn't as easy as
+hitting home.  The most consistent way I've found is to hit end on the line
+above, and then right arrow your way to the start of the next line.  This works
+as long as there is no line wrapping, so in the default implementation, entering
+visual line mode sends ~KC_END~, ~KC_RIGHT~, ~LSFT(KC_UP)~.  Not only is this quite
+consistent, it also immediately highlights the current line just as you would
+expect.  The only downside with the default implementation is that if you then
+try to go down that first line will be deselected, so you have to start your
+visual selection a line above when moving downwards.  Of course
+=BETTER_VISUAL_MODE= fixes this as long as you don't double back on the cursor.
 
 ** Extra Features
 In an effort to reduce the size overhead of the project, any extra features can be enabled and disabled using macros in your config.h.
@@ -132,31 +171,54 @@ In an effort to reduce the size overhead of the project, any extra features can 
 | =VIM_NUMBERED_JUMPS=      | Adds the ability to do numbered motions, ie ~10j~ or ~5w~, be wary of large numbers however, as they can freeze up your keyboard. | -540 B            |
 
 *** Text Objects
-Unfortunately there is really no way to implement text objects properly, especially things like brackets. However, word objects in some form are quite possible.
-The tricky part is distinguishing between an inner and outer word, some editors will have a forward word jump go to the end of a word like vim''s ~w~.
+Unfortunately there is really no way to implement text objects properly,
+especially things like brackets. However, word objects in some form are quite
+possible.  The tricky part is distinguishing between an inner and outer word,
+some editors will have a forward word jump go to the end of a word like vim''s
+~w~.
 
-It's easy to get an inner word if word jump acts like ~e~, since you can go to the end of the word, then hold shift and jump to the start.
-And similarly it's easy to get an outer word if word jump acts like ~w~, since you can go to the start of the next word then hold shift and jump back to the start of your word.
-However, getting an inner word with just ~w~ and ~b~ at your disposal isn't possible without using arrow keys which won't be consistent in scenarios where the word punctuated in some way.
-But, it is possible to get an outer word with ~b~ and ~e~. In vim terms, the sequence looks like ~eebvb~, now in vim that doesn't do exactly what we want, but with word jumps it does result in an outer word selection.
+It's easy to get an inner word if word jump acts like ~e~, since you can go to the
+end of the word, then hold shift and jump to the start.  And similarly it's easy
+to get an outer word if word jump acts like ~w~, since you can go to the start of
+the next word then hold shift and jump back to the start of your word.  However,
+getting an inner word with just ~w~ and ~b~ at your disposal isn't possible without
+using arrow keys which won't be consistent in scenarios where the word
+punctuated in some way.  But, it is possible to get an outer word with ~b~ and ~e~.
+In vim terms, the sequence looks like ~eebvb~, now in vim that doesn't do exactly
+what we want, but with word jumps it does result in an outer word selection.
 
-It should be noted that this always selects extra space to the right of the word, and if the cursor is at the end of a word it will get the wrong word. So it isn't ideal, but it works okay in general.
+It should be noted that this always selects extra space to the right of the
+word, and if the cursor is at the end of a word it will get the wrong word. So
+it isn't ideal, but it works okay in general.
 
-There is also a the ~g~ object, which isn't even a default vim object, but ~CTRL+A~ provides such a nice way to select the entire document that I couldn't help it.
-I find it especially nice if I'm sending a message and I want to delete what I wrote or change the whole thing, with ~dig~ or ~cig~.
+There is also a the ~g~ object, which isn't even a default vim object, but ~CTRL+A~
+provides such a nice way to select the entire document that I couldn't help it.
+I find it especially nice if I'm sending a message and I want to delete what I
+wrote or change the whole thing, with ~dig~ or ~cig~.
 
 *** Dot Repeat
-The dot repeat feature can be enabled with the =VIM_DOT_REPEAT= macro. This lets the user hit the ~.~ key in normal mode to repeat the last normal mode command.
-For example, typing ~ciw~, ~hello!~, will replace the underlying word with ~hello!~, now going over another word hitting ~.~ will repeat the action, just like vim does.
-The way this works is that once an action starts, like ~c~ or ~D~, or even ~A~ all keycodes are recorded until we return to the normal mode state.
-Once you hit ~.~ it goes through the recorded keys until it hits normal mode again.
-The default size of the recorded keys buffer is =64=, but can be modified with the =VIM_REPEAT_BUF_SIZE= macro.
+The dot repeat feature can be enabled with the =VIM_DOT_REPEAT= macro. This lets
+the user hit the ~.~ key in normal mode to repeat the last normal mode command.
+For example, typing ~ciw~, ~hello!~, will replace the underlying word with ~hello!~,
+now going over another word hitting ~.~ will repeat the action, just like vim
+does.  The way this works is that once an action starts, like ~c~ or ~D~, or even ~A~
+all keycodes are recorded until we return to the normal mode state.  Once you
+hit ~.~ it goes through the recorded keys until it hits normal mode again.  The
+default size of the recorded keys buffer is =64=, but can be modified with the
+=VIM_REPEAT_BUF_SIZE= macro.
 
 *** W Motions
-If the =VIM_W_BEGINNING_OF_WORD= macro is defined, the ~w~ and ~W~ motions (which are synonymous) will skip to the beginning of the next word by sending LCTL + RIGHT and then tapping LCTL + RIGHT, LCTL + LEFT on release. Otherwise, their default behavior is to imitate the ~e~ and ~E~ motions by sending LCTL + RIGHT. Note that enabling this feature currently causes unexpected side effects with actions such as ~cw~ and ~dw~, where the ~w~ motion acts like an ~e~ motion  ([[https://github.com/andrewjrae/qmk-vim/pull/1#discussion_r650416367][context]]).
+If the =VIM_W_BEGINNING_OF_WORD= macro is defined, the ~w~ and ~W~ motions (which are
+synonymous) will skip to the beginning of the next word by sending LCTL + RIGHT
+and then tapping LCTL + RIGHT, LCTL + LEFT on release. Otherwise, their default
+behavior is to imitate the ~e~ and ~E~ motions by sending LCTL + RIGHT. Note that
+enabling this feature currently causes unexpected side effects with actions such
+as ~cw~ and ~dw~, where the ~w~ motion acts like an ~e~ motion ([[https://github.com/andrewjrae/qmk-vim/pull/1#discussion_r650416367][context]]).
 
 *** Numbered Jumps
-The numbered jumps feature allows users to do repeat motions a specified number of times just like in vim. By enabling =VIM_NUMBERED_JUMPS=, you can now type ~10j~ to jump down 10 lines, or you can type ~c3w~ to change the next three words.
+The numbered jumps feature allows users to do repeat motions a specified number
+of times just like in vim. By enabling =VIM_NUMBERED_JUMPS=, you can now type ~10j~
+to jump down 10 lines, or you can type ~c3w~ to change the next three words.
 
 * Configuration
 ** Setup
@@ -189,9 +251,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     ...
   #+end_src
 
-+ The last step is to add a way to enter into vim mode. There are many ways to do this, personally I use leader sequences, but using combos or just a macro on a layer are all viable ways to do this.
-  The important part here is ensure that you also have a way to get out of vim mode, since by default there is no way out.
-  Enabling =VIM_COLON_CMDS= will allow you to also use ~:q~ or ~:wq~ in order to get out of vim, but in general I would recommend using the =toggle_vim_mode()= function.
++ The last step is to add a way to enter into vim mode. There are many ways
+  to do this, personally I use leader sequences, but using combos or just a
+  macro on a layer are all viable ways to do this.  The important part here is
+  ensure that you also have a way to get out of vim mode, since by default there
+  is no way out.  Enabling =VIM_COLON_CMDS= will allow you to also use ~:q~ or ~:wq~
+  in order to get out of vim, but in general I would recommend using the
+  =toggle_vim_mode()= function.
 
   As a simple example, here is the setup for a simple custom keycode macro:
   #+begin_src C
@@ -218,12 +284,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
   #+end_src
 ** Adding Keybinds
-Since most vim users remap a key here or there, I've added hooks for the normal, visual, visual line, and insert modes.
-These hooks act in the exact same way that =process_record_user()= does, except that keycodes come in with any active modifiers applied to them.
-And not all keycodes will be passed down to vim, vim mode only intercepts keycodes alphanumeric, and symbolic keycodes (and escape).
+Since most vim users remap a key here or there, I've added hooks for the normal,
+visual, visual line, and insert modes.  These hooks act in the exact same way
+that =process_record_user()= does, except that keycodes come in with any active
+modifiers applied to them.  And not all keycodes will be passed down to vim, vim
+mode only intercepts keycodes alphanumeric, and symbolic keycodes (and escape).
 
-For example pressing =KC_LSHIFT= and then =KC_A= will have =LSFT(KC_A)= sent down to vim mode.
-It should also be noted that all modifiers will be added to the keycode as the left mod, ie you can always use =LSFT(KC_A)= for catching ~A~.
+For example pressing =KC_LSHIFT= and then =KC_A= will have =LSFT(KC_A)= sent down to
+vim mode.  It should also be noted that all modifiers will be added to the
+keycode as the left mod, ie you can always use =LSFT(KC_A)= for catching ~A~.
 
 The hooks that you can use are:
 #+begin_src C
@@ -233,8 +302,9 @@ bool process_visual_mode_user(uint16_t keycode, const keyrecord_t *record);
 bool process_visual_line_mode_user(uint16_t keycode, const keyrecord_t *record);
 #+end_src
 
-As an example, I have the bad habit of hitting ~CTRL+S~ all the time. And for a long time I've had it so that in insert mode, ~CTRL+S~ saves and enters [[#normal-mode][normal_mode()]].
-So in my [[https://github.com/andrewjrae/kyria-keymap/blob/master/keymap.c][keymap.c]] file I have this binding added:
+As an example, I have the bad habit of hitting ~CTRL+S~ all the time. And for a
+long time I've had it so that in insert mode, ~CTRL+S~ saves and enters
+[[#normal-mode][normal_mode()]].  So in my [[https://github.com/andrewjrae/kyria-keymap/blob/master/keymap.c][keymap.c]] file I have this binding added:
 #+begin_src C
 bool process_insert_mode_user(uint16_t keycode, const keyrecord_t *record) {
     if (record->event.pressed && keycode == LCTL(KC_S)) {
@@ -254,7 +324,8 @@ void visual_mode_user(void);
 void visual_line_mode_user(void);
 #+end_src
 
-These can optionally be used to set custom state in your keymap.c file; for example, changing the [[https://beta.docs.qmk.fm/using-qmk/hardware-features/lighting/feature_rgblight#enabling-and-disabling-lighting-layers-id-enabling-lighting-layers][RGB lighting layer]] to indicate the current mode:
+These can optionally be used to set custom state in your keymap.c file; for
+example, changing the [[https://beta.docs.qmk.fm/using-qmk/hardware-features/lighting/feature_rgblight#enabling-and-disabling-lighting-layers-id-enabling-lighting-layers][RGB lighting layer]] to indicate the current mode:
 #+begin_src C
 void insert_mode_user(void) {
   rgblight_set_layer_state(VIM_LIGHTING_LAYER, false);
@@ -264,14 +335,17 @@ void normal_mode_user(void) {
 }
 #+end_src
 ** Mac Support
-Since Macs have different shortcuts, you need to set the =VIM_FOR_MAC= macro in your config.h.
-That being said I'm not a Mac user so it's all untested and I'd guess there are some issues.
+Since Macs have different shortcuts, you need to set the =VIM_FOR_MAC= macro in
+your config.h.  That being said I'm not a Mac user so it's all untested and I'd
+guess there are some issues.
 
-If you are a Mac user and do encounter issues, feel free to put up a PR or an issue.
+If you are a Mac user and do encounter issues, feel free to put up a PR or an
+issue.
 
 **  Displaying Modes
-To help remind you that you have vim mode enabled, there are two functions available.
-The =vim_mode_enabled()= function which returns =true= is vim mode is active, and the =get_vim_mode()= function which returns the current vim mode.
+To help remind you that you have vim mode enabled, there are two functions
+available.  The =vim_mode_enabled()= function which returns =true= is vim mode is
+active, and the =get_vim_mode()= function which returns the current vim mode.
 
 In my keymap I use these to display the current mode on my OLED.
 #+begin_src C
@@ -297,7 +371,10 @@ if (vim_mode_enabled()) {
 
 * Contributing
 ** Updating Readme Firmware Sizes
-If you'd like to submit a pull request, please update the [[#extra-features][table with the firmware sizes for each feature]]. This can be done automatically by running the following commands in the root directory of this repository (it may take a few minutes, since it recompiles for each feature in the table):
+If you'd like to submit a pull request, please update the [[#extra-features][table with the
+firmware sizes for each feature]]. This can be done automatically by running the
+following commands in the root directory of this repository (it may take a few
+minutes, since it recompiles for each feature in the table):
 #+begin_src bash
 docker build -t qmk-vim-update-readme update-readme
 docker run -v $PWD:/qmk_firmware/keyboards/uno/keymaps/qmk-vim-update-readme/qmk-vim qmk-vim-update-readme
