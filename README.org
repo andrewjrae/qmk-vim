@@ -234,7 +234,8 @@ sometimes I forget to turn it off and get briefly confused why the /real/ vim
 isn't working quite right.
 
 In essence, this mode works as normal except that any time you press ~Esc~ you
-exit the mode, same goes if you call any action like ~daw~, ~Y~ and the like.
+exit the mode, same goes if you call any complex action like ~daw~, ~ciw~ and the like.
+Note that currently simple things like ~x~ and ~Y~ do not cause oneshot vim to exit.
 
 To enable this mode simply add the =ONESHOT_VIM= macro to your =config.h=.
 Then add some way to call the =start_oneshot_vim()= function.
