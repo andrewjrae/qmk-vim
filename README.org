@@ -18,6 +18,7 @@
     - [[#dot-repeat][Dot Repeat]]
     - [[#w-motions][W Motions]]
     - [[#numbered-jumps][Numbered Jumps]]
+    - [[#oneshot-vim][Oneshot Vim]]
 - [[#configuration][Configuration]]
   - [[#setup][Setup]]
   - [[#adding-keybinds][Adding Keybinds]]
@@ -169,6 +170,7 @@ In an effort to reduce the size overhead of the project, any extra features can 
 | =VIM_DOT_REPEAT=          | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                                | -232 B            |
 | =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.                  | -108 B            |
 | =VIM_NUMBERED_JUMPS=      | Adds the ability to do numbered motions, ie ~10j~ or ~5w~, be wary of large numbers however, as they can freeze up your keyboard. | -540 B            |
+| =ONESHOT_VIM=             | Enables running vim in "oneshot" mode, see [[#oneshot-vim][oneshot vim]] for details.                                             | -76 B             |
 
 *** Text Objects
 Unfortunately there is really no way to implement text objects properly,
@@ -213,12 +215,30 @@ synonymous) will skip to the beginning of the next word by sending LCTL + RIGHT
 and then tapping LCTL + RIGHT, LCTL + LEFT on release. Otherwise, their default
 behavior is to imitate the ~e~ and ~E~ motions by sending LCTL + RIGHT. Note that
 enabling this feature currently causes unexpected side effects with actions such
-as ~cw~ and ~dw~, where the ~w~ motion acts like an ~e~ motion ([[https://github.com/andrewjrae/qmk-vim/pull/1#discussion_r650416367][context]]).
+as ~cw~ and ~dw~, where the ~w~ motion acts like an ~e~ motion
+([[https://github.com/andrewjrae/qmk-vim/pull/1#discussion_r650416367][context]]).
 
 *** Numbered Jumps
 The numbered jumps feature allows users to do repeat motions a specified number
 of times just like in vim. By enabling =VIM_NUMBERED_JUMPS=, you can now type ~10j~
 to jump down 10 lines, or you can type ~c3w~ to change the next three words.
+
+*** Oneshot Vim
+"Oneshot" vim is not a normal vim feature, rather it's a way to use this enable
+this vim mode for a brief moment. Inspired by oneshot keys and other features
+like [[https://github.com/andrewjrae/kyria-keymap#caps-word][caps word]], this
+mode tries to intelligently leave vim mode automatically.  This was added
+because sometimes I only want to make a small edit, or quickly navigate and yank
+some text, and I don't like having to toggle the mode on and off. Especially as
+sometimes I forget to turn it off and get briefly confused why the /real/ vim
+isn't working quite right.
+
+In essence, this mode works as normal except that any time you press ~Esc~ you
+exit the mode, same goes if you call any complex action like ~daw~, ~ciw~ and the like.
+Note that currently simple things like ~x~ and ~Y~ do not cause oneshot vim to exit.
+
+To enable this mode simply add the =ONESHOT_VIM= macro to your =config.h=.
+Then add some way to call the =start_oneshot_vim()= function.
 
 * Configuration
 ** Setup

@@ -27,5 +27,12 @@ void disable_vim_mode(void);
 // Toggle vim mode
 void toggle_vim_mode(void);
 
+#ifdef ONESHOT_VIM
+// Start vim mode
+void start_oneshot_vim(void);
+// Stop vim mode
+void stop_oneshot_vim(void);
+#endif
+
 // Process keycode for vim mode
 bool process_vim_mode(uint16_t keycode, const keyrecord_t *record);
