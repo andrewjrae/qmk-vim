@@ -31,7 +31,7 @@ void register_motion(uint16_t keycode, const keyrecord_t *record) {
 bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods) {
 #ifdef VIM_FOR_ALL
     // This macro duplicates the code inside
-    // Calling it on only a subset of the larger switch statement saves about 200bytes
+    // Calling it on only a subset of the larger switch statement saves about 200 bytes
     VIM_REDUCE_NOMAC_MAC_TO_CONST(
         switch (keycode) {
            case VIM_B: keycode = KC_B;
