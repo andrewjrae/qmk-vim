@@ -34,5 +34,15 @@ void start_oneshot_vim(void);
 void stop_oneshot_vim(void);
 #endif
 
+#ifdef VIM_FOR_ALL
+// Check to see if mac mode is enabled
+bool vim_for_mac_enabled(void);
+// Enable mac mode
+void enable_vim_for_mac(void);
+// Disable mac mode
+void disable_vim_for_mac(void);
+// Toggle mac mode
+void toggle_vim_for_mac(void);
+#endif
 // Process keycode for vim mode
 bool process_vim_mode(uint16_t keycode, const keyrecord_t *record);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mac_mode.h"
 #include "motions.h"
 
 // If either of the text objects are defined, define this macro for both
@@ -10,13 +11,9 @@
 // Define a custom variable for the common shortcut modifier
 // ie on MAC, CMD + C is copy, but on Windows/Linux it's CTRL + C
 // This should be used whenever using one of these shortcuts
-#ifdef VIM_FOR_MAC
-#define VCMD LCMD
-#define VIM_REDO VCMD(LSFT(KC_Z))
-#else
-#define VCMD LCTL
-#define VIM_REDO VCMD(KC_Y)
-#endif
+
+#define VCMD(kc) VIM_MAC_NOMAC(LCMD(kc), LCTL(kc))
+#define VIM_REDO VIM_MAC_NOMAC(VCMD(LSFT(KC_Z)), VCMD(KC_Y))
 
 // These + VIM_REDO (defined above) are the main keys for each vim core vim action
 #define VIM_CHANGE KC_DEL

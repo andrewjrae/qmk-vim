@@ -23,6 +23,26 @@
 extern process_func_t process_func;
 
 static bool vim_enabled = false;
+
+#ifdef VIM_FOR_ALL
+// Check to see if mac mode is enabled
+bool vim_for_mac_enabled(void) {
+    return vim_for_mac;
+}
+// Enable mac mode
+void enable_vim_for_mac(void) {
+    vim_for_mac = true;
+}
+// Disable mac mode
+void disable_vim_for_mac(void) {
+    vim_for_mac = false;
+}
+// Toggle mac mode
+void toggle_vim_for_mac(void) {
+    vim_for_mac = !vim_for_mac;
+}
+#endif
+
 // Check to see if vim mode is enabled
 bool vim_mode_enabled(void) {
     return vim_enabled;
