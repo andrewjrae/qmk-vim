@@ -171,6 +171,7 @@ In an effort to reduce the size overhead of the project, any extra features can 
 | =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.                  | -108 B            |
 | =VIM_NUMBERED_JUMPS=      | Adds the ability to do numbered motions, ie ~10j~ or ~5w~, be wary of large numbers however, as they can freeze up your keyboard. | -540 B            |
 | =ONESHOT_VIM=             | Enables running vim in "oneshot" mode, see [[#oneshot-vim][oneshot vim]] for details.                                             | -76 B             |
+| =VIM_FOR_ALL=             | Adds the ability to toggle Mac support on and off at runtime, rather than only at compile time.                                   | -422 B            |
 
 *** Text Objects
 Unfortunately there is really no way to implement text objects properly,
@@ -361,6 +362,20 @@ guess there are some issues.
 
 If you are a Mac user and do encounter issues, feel free to put up a PR or an
 issue.
+
+If you intend to use your keyboard with both Mac and Windows or Linux computers, you can set the =VIM_FOR_ALL= macro in
+your config.h. This will allow you to use the following functions in your keymap.c to switch between Mac support mode
+and non-Mac support mode:
+#+begin_src C
+void enable_vim_for_mac(void);
+void disable_vim_for_mac(void);
+void toggle_vim_for_mac(void);
+bool vim_for_mac_enabled(void);
+#+end_src
+=VIM_FOR_ALL= overrides the behavior of =VIM_FOR_MAC=.
+
+By default the keyboard will start in non-Mac support mode, but if =VIM_FOR_ALL= and =VIM_FOR_MAC= are both defined the
+keyboard will start in Mac support mode.
 
 **  Displaying Modes
 To help remind you that you have vim mode enabled, there are two functions
