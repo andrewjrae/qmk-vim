@@ -34,10 +34,18 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
     // Calling it on only a subset of the larger switch statement saves some space
     VIM_REDUCE_MAC_NOMAC_TO_CONST(
         switch (keycode) {
-           case VIM_B: keycode = KC_B;
-           case VIM_W: keycode = KC_W;
-           case VIM_0: keycode = KC_0;
-           case VIM_DLR: keycode = KC_DLR;
+           case VIM_B:
+               keycode = KC_B;
+               break;
+           case VIM_W:
+               keycode = KC_W;
+               break;
+           case VIM_0:
+               keycode = KC_0;
+               break;
+           case VIM_DLR:
+               keycode = KC_DLR;
+               break;
         }
     )
 #endif

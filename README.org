@@ -171,7 +171,7 @@ In an effort to reduce the size overhead of the project, any extra features can 
 | =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.                  | -108 B            |
 | =VIM_NUMBERED_JUMPS=      | Adds the ability to do numbered motions, ie ~10j~ or ~5w~, be wary of large numbers however, as they can freeze up your keyboard. | -540 B            |
 | =ONESHOT_VIM=             | Enables running vim in "oneshot" mode, see [[#oneshot-vim][oneshot vim]] for details.                                             | -76 B             |
-| =VIM_FOR_ALL=             | Adds the ability to toggle Mac support on and off at runtime, rather than only at compile time.                                   | -422 B            |
+| =VIM_FOR_ALL=             | Adds the ability to toggle Mac support on and off at runtime, rather than only at compile time.                                   | -450 B            |
 
 *** Text Objects
 Unfortunately there is really no way to implement text objects properly,
