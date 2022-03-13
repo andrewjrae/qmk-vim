@@ -160,7 +160,7 @@ In an effort to reduce the size overhead of the project, any extra features can 
 |---------------------------+-----------------------------------------------------------------------------------------------------------------------------------+-------------------|
 | =NO_VISUAL_MODE=          | Disables the normal visual mode.                                                                                                  | +256 B            |
 | =NO_VISUAL_LINE_MODE=     | Disables the normal visual line mode.                                                                                             | +336 B            |
-| =BETTER_VISUAL_MODE=      | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                             | -174 B            |
+| =BETTER_VISUAL_MODE=      | Makes the visual modes much more vim like, see [[#visual-line-mode][visual_line_mode()]] for details.                             | -172 B            |
 | =VIM_I_TEXT_OBJECTS=      | Adds the ~i~ text objects, which adds the ~iw~ and ~ig~ text objects, see [[#text-objects][text objects]] for details.            | -122 B            |
 | =VIM_A_TEXT_OBJECTS=      | Adds the ~a~ text objects, which adds the ~aw~ and ~ag~ text objects.                                                             | -138 B            |
 | =VIM_G_MOTIONS=           | Adds ~gg~ and ~G~ motions, which only work in some programs.                                                                      | -116 B            |
@@ -168,10 +168,10 @@ In an effort to reduce the size overhead of the project, any extra features can 
 | =VIM_PASTE_BEFORE=        | Adds the ~P~ command.                                                                                                             | -60 B             |
 | =VIM_REPLACE=             | Adds the ~r~ command.                                                                                                             | -76 B             |
 | =VIM_DOT_REPEAT=          | Adds the ~.~ command, allowing you to repeat actions, see [[#dot-repeat][dot repeat]] for details.                                | -232 B            |
-| =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.                  | -108 B            |
-| =VIM_NUMBERED_JUMPS=      | Adds the ability to do numbered motions, ie ~10j~ or ~5w~, be wary of large numbers however, as they can freeze up your keyboard. | -540 B            |
+| =VIM_W_BEGINNING_OF_WORD= | Makes the ~w~ and ~W~ motions skip to the beginning of the next word, see [[#w-motions][W motions]] for details.                  | -104 B            |
+| =VIM_NUMBERED_JUMPS=      | Adds the ability to do numbered motions, ie ~10j~ or ~5w~, be wary of large numbers however, as they can freeze up your keyboard. | -544 B            |
 | =ONESHOT_VIM=             | Enables running vim in "oneshot" mode, see [[#oneshot-vim][oneshot vim]] for details.                                             | -76 B             |
-| =VIM_FOR_ALL=             | Adds the ability to toggle Mac support on and off at runtime, rather than only at compile time.                                   | -450 B            |
+| =VIM_FOR_ALL=             | Adds the ability to toggle Mac support on and off at runtime, rather than only at compile time.                                   | -456 B            |
 
 *** Text Objects
 Unfortunately there is really no way to implement text objects properly,

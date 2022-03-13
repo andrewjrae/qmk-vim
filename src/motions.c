@@ -29,8 +29,7 @@ void register_motion(uint16_t keycode, const keyrecord_t *record) {
 }
 
 bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mods) {
-#ifdef VIM_FOR_ALL
-    // This macro duplicates the code inside
+    // This macro duplicates the code inside if VIM_FOR_ALL is enabled
     // Calling it on only a subset of the larger switch statement saves some space
     VIM_REDUCE_MAC_NOMAC_TO_CONST(
         switch (keycode) {
@@ -47,8 +46,7 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
                keycode = KC_DLR;
                break;
         }
-    )
-#endif
+    );
     DO_NUMBERED_ACTION(
         switch (keycode) {
         case KC_H:
@@ -72,17 +70,11 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
             register_motion(qk_mods | VIM_L, record);
             break;
         case KC_B:
-#ifndef VIM_FOR_ALL
-        case VIM_B:
-#endif
         case LSFT(KC_B):
             set_visual_direction(V_BACKWARD);
             register_motion(qk_mods | VIM_B, record);
             break;
         case KC_W:
-#ifndef VIM_FOR_ALL
-        case VIM_W:
-#endif
         case LSFT(KC_W):
 #ifdef VIM_W_BEGINNING_OF_WORD
             set_visual_direction(V_FORWARD);
@@ -100,17 +92,11 @@ bool process_motions(uint16_t keycode, const keyrecord_t *record, uint16_t qk_mo
             register_motion(qk_mods | VIM_E, record);
             break;
         case KC_0:
-#ifndef VIM_FOR_ALL
-        case VIM_0:
-#endif
         case KC_CIRC: // ^
             set_visual_direction(V_BACKWARD);
             register_motion(qk_mods | VIM_0, record);
             break;
-        case KC_DLR:
-#ifndef VIM_FOR_ALL
-        case VIM_DLR: // $
-#endif
+        case KC_DLR: // $
             set_visual_direction(V_FORWARD);
             register_motion(qk_mods | VIM_DLR, record);
             break;
