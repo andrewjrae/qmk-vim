@@ -1,34 +1,20 @@
 #pragma once
 
 #include QMK_KEYBOARD_H
+#include "mac_mode.h"
 
 // Define a custom variable for the common motion shortcut modifier
 // ie on MAC, OPT + RIGHT is forward word, but on Windows/Linux it's CTRL + RIGHT
 // This should be used whenever using one of these shortcuts
-#ifdef VIM_FOR_MAC
-#define VMOTION LOPT
+#define VMOTION(kc) VIM_MAC_NOMAC(LOPT(kc), LCTL(kc))
 
-#define VIM_0 LCMD(KC_LEFT)
-#define VIM_HOME() tap_code16(VIM_0);
+#define VIM_0 VIM_MAC_NOMAC(LCMD(KC_LEFT), KC_HOME)
+#define VIM_HOME() VIM_MAC_NOMAC(tap_code16(VIM_0), tap_code(VIM_0));
 #define VIM_SHIFT_HOME() tap_code16(LSFT(VIM_0));
 
-#define VIM_DLR LCMD(KC_RIGHT)
-#define VIM_END() tap_code16(VIM_DLR);
+#define VIM_DLR VIM_MAC_NOMAC(LCMD(KC_RIGHT), KC_END)
+#define VIM_END() VIM_MAC_NOMAC(tap_code16(VIM_DLR), tap_code(VIM_DLR));
 #define VIM_SHIFT_END() tap_code16(LSFT(VIM_DLR));
-
-#else // Windows / Linux
-
-#define VMOTION LCTL
-
-#define VIM_0 KC_HOME
-#define VIM_HOME() tap_code(VIM_0);
-#define VIM_SHIFT_HOME() tap_code16(LSFT(VIM_0));
-
-#define VIM_DLR KC_END
-#define VIM_END() tap_code(VIM_DLR);
-#define VIM_SHIFT_END() tap_code16(LSFT(VIM_DLR));
-
-#endif
 
 // The vim motions keys supported by single keystrokes/chords
 #define VIM_H KC_LEFT
