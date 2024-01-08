@@ -107,7 +107,7 @@ bool process_vim_mode(uint16_t keycode, const keyrecord_t *record) {
         }
 
         // let through anything above normal keyboard keycode or a mod
-        if ((keycode < KC_A || keycode > KC_CAPSLOCK) && (keycode < QK_MODS || keycode > QK_MODS_MAX)) {
+        if ((keycode < KC_A || keycode > KC_CAPS_LOCK) && (keycode < QK_MODS || keycode > QK_MODS_MAX)) {
             return true;
         }
 
